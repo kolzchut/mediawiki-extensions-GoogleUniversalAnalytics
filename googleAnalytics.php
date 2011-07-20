@@ -14,7 +14,7 @@ $wgExtensionCredits['other'][] = array(
 
 $wgExtensionMessagesFiles['googleAnalytics'] = dirname(__FILE__) . '/googleAnalytics.i18n.php';
 
-$wgHooks['BeforePageDisplay'][]  = 'efGoogleAnalyticsHookText';
+$wgHooks['SkinAfterBottomScripts'][]  = 'efGoogleAnalyticsHookText';
 $wgHooks['ParserAfterTidy'][] = 'efGoogleAnalyticsASAC';
 
 $wgGoogleAnalyticsAccount = "";
@@ -32,9 +32,8 @@ function efGoogleAnalyticsASAC( &$parser, &$text ) {
 	return true;
 }
 
-function efGoogleAnalyticsHookText($out, &$skin='') {
-	$script = efAddGoogleAnalyticsJS();
-	$out->addScript( $html );
+function efGoogleAnalyticsHookText($skin, &$text='') {
+	$text .= efAddGoogleAnalyticsJS();
 	return true;
 }
 
