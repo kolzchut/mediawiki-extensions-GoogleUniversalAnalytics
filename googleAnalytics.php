@@ -34,7 +34,7 @@ function efGoogleAnalyticsASAC( &$parser, &$text ) {
 
 function efGoogleAnalyticsHookText($out, &$skin='') {
 	$script = efAddGoogleAnalyticsJS();
-	$out->addScript( $html )
+	$out->addScript( $html );
 	return true;
 }
 
