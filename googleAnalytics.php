@@ -6,47 +6,82 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 $wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
 	'name'           => 'Google Analytics Integration',
-	'version'        => '2.0.2',
+	'version'        => '3.0.3',
 	'author'         => 'Tim Laqua, Dror Snir',
 	'descriptionmsg' => 'googleanalytics-desc',
-	'url'            => 'http://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration',
+	'url'            => 'https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration',
 );
 
 $wgExtensionMessagesFiles['googleAnalytics'] = dirname(__FILE__) . '/googleAnalytics.i18n.php';
 
-$wgHooks['SkinAfterBottomScripts'][]  = 'efGoogleAnalyticsHookText';
-$wgHooks['ParserAfterTidy'][] = 'efGoogleAnalyticsASAC';
+#$wgHooks['BeforePageDisplay'][]  = 'efGoogleAnalyticsHook';
+$wgHooks['SkinAfterBottomScripts'][]  = 'efGoogleAnalyticsHook';
 
-$wgGoogleAnalyticsAccount = "";
-$wgGoogleAnalyticsAddASAC = false;
+/* Dror - New */
+$wgGoogleAnalyticsAccount = '';
+$wgGoogleAnalyticsDomainName = '';
+$wgGoogleAnalyticsCookiePath = '';
+$wgGoogleAnalyticsCookiePathCopy = '';
+$wgGoogleAnalyticsSegmentByGroup = false;
+$wgGoogleAnalyticsIgnoreGroups = array( 'bot', 'sysop' );
+
+/* Old - to be removed eventually */
 $wgGoogleAnalyticsIgnoreSysops = true;
 $wgGoogleAnalyticsIgnoreBots = true;
+/* end old */
 
-function efGoogleAnalyticsASAC( &$parser, &$text ) {
-	global $wgOut, $wgGoogleAnalyticsAccount, $wgGoogleAnalyticsAddASAC;
+/* temporary while not using BeforePageDisplayHook
+function efGoogleAnalyticsHook( &$out, &$skin ) {
+	$out->addHeadItem( 'GoogleAnalyticsIntegration', efAddGoogleAnalytics() );
+	return true;
+}
+*/
+function efGoogleAnalyticsHook( $skin, &$text ) {
+	$text .= efAddGoogleAnalytics();
+	return true;
+}
 
-	if( !empty($wgGoogleAnalyticsAccount) && $wgGoogleAnalyticsAddASAC ) {
-		$wgOut->addScript('<script type="text/javascript">window.google_analytics_uacct = "' . $wgGoogleAnalyticsAccount . '";</script>');
+function efAddGoogleAnalytics() {
+	global $wgGoogleAnalyticsAccount, $wgGoogleAnalyticsIgnoreSysops, $wgGoogleAnalyticsIgnoreBots, $wgUser;
+	global $wgGoogleAnalyticsDomainName, $wgGoogleAnalyticsCookiePath, $wgGoogleAnalyticsCookiePathCopy, $wgGoogleAnalyticsSegmentByGroup;
+
+	if ( $wgGoogleAnalyticsAccount === '' ) {
+		return "\n<!-- Set \$wgGoogleAnalyticsAccount to your account # provided by Google Analytics. -->\n";
+	}
+	
+	if ( $wgUser->isAllowed( 'bot' ) && $wgGoogleAnalyticsIgnoreBots ) {
+		return "\n<!-- Google Analytics tracking is disabled for bots -->\n";
 	}
 
-	return true;
-}
+	if ( $wgUser->isAllowed( 'protect' ) && $wgGoogleAnalyticsIgnoreSysops ) {
+		return "\n<!-- Google Analytics tracking is disabled for users with 'protect' rights (I.E. sysops) -->\n";
+	}
 
-function efGoogleAnalyticsHookText($skin, &$text='') {
-	$text .= efAddGoogleAnalyticsJS();
-	return true;
-}
-
-function efAddGoogleAnalyticsJS() {
-	global $wgGoogleAnalyticsAccount, $wgGoogleAnalyticsIgnoreSysops, $wgGoogleAnalyticsIgnoreBots, $wgUser;
-	if (!$wgUser->isAllowed('bot') || !$wgGoogleAnalyticsIgnoreBots) {
-		if (!$wgUser->isAllowed('protect') || !$wgGoogleAnalyticsIgnoreSysops) {
-			if ( !empty($wgGoogleAnalyticsAccount) ) {
-				$funcOutput = <<<GASCRIPT
+    /* Else: */
+	return <<<GASCRIPT
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', '{$wgGoogleAnalyticsAccount}']);
+  if( '{$wgGoogleAnalyticsDomainName}' != '' ) {
+  	_gaq.push(['_setDomainName', '{$wgGoogleAnalyticsDomainName}']);
+  }
+  if( '{$wgGoogleAnalyticsCookiePath}' != '' ) {
+  	_gaq.push(['_setCookiePath', '{$wgGoogleAnalyticsCookiePath}']);
+  }
+  if( '{$wgGoogleAnalyticsSegmentByGroup}' != '' ) {
+  	groupName = ( $.inArray( '{$wgGoogleAnalyticsSegmentByGroup}', mw.config.get( 'wgUserGroups' ) ) > -1 ) ? '{$wgGoogleAnalyticsSegmentByGroup}' : '';
+	  _gaq.push(['_setCustomVar',
+			1,			// first slot 
+			'User Group',		// custom variable name 
+			groupName,		// custom variable value 
+			2			// custom variable scope - session-level
+			]);  
+  }
   _gaq.push(['_trackPageview']);
+
+  if ( '{$wgGoogleAnalyticsCookiePath}' != '' && '{$wgGoogleAnalyticsCookiePathCopy}' != '' ) {
+		_gaq.push(['_cookiePathCopy', '{$wgGoogleAnalyticsCookiePathCopy}']);
+  }
 
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -55,17 +90,6 @@ function efAddGoogleAnalyticsJS() {
   })();
 </script>
 GASCRIPT;
-			} else {
-				$funcOutput = "\n<!-- Set \$wgGoogleAnalyticsAccount to your account # provided by Google Analytics. -->";
-			}
-		} else {
-			$funcOutput = "\n<!-- Google Analytics tracking is disabled for users with 'protect' rights (I.E. sysops) -->";
-		}
-	} else {
-		$funcOutput = "\n<!-- Google Analytics tracking is disabled for bots -->";
-	}
-
-	return $funcOutput;
 }
 
 ///Alias for efAddGoogleAnalytics - backwards compatibility.
