@@ -68,15 +68,16 @@ function efAddGoogleAnalytics() {
   if( '{$wgGoogleAnalyticsCookiePath}' != '' ) {
   	_gaq.push(['_setCookiePath', '{$wgGoogleAnalyticsCookiePath}']);
   }
-  if( '{$wgGoogleAnalyticsSegmentByGroup}' != '' ) {
-  	groupName = ( $.inArray( '{$wgGoogleAnalyticsSegmentByGroup}', mw.config.get( 'wgUserGroups' ) ) > -1 ) ? '{$wgGoogleAnalyticsSegmentByGroup}' : '';
+  if( '{$wgGoogleAnalyticsSegmentByGroup}' == true ) {
 	  _gaq.push(['_setCustomVar',
-			1,			// first slot 
-			'User Group',		// custom variable name 
-			groupName,		// custom variable value 
-			2			// custom variable scope - session-level
-			]);  
+		1,					// first slot 
+		'User Groups',				// custom variable name 
+		mw.config.get( 'wgUserGroups' ),	// custom variable value 
+		2					// custom variable scope - session-level
+	]);
+
   }
+  
   _gaq.push(['_trackPageview']);
 
   if ( '{$wgGoogleAnalyticsCookiePath}' != '' && '{$wgGoogleAnalyticsCookiePathCopy}' != '' ) {
