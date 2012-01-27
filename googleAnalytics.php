@@ -70,10 +70,10 @@ function efAddGoogleAnalytics() {
   }
   if( '{$wgGoogleAnalyticsSegmentByGroup}' == true ) {
 	  _gaq.push(['_setCustomVar',
-		1,					// first slot 
-		'User Groups',				// custom variable name 
-		mw.config.get( 'wgUserGroups' ),	// custom variable value 
-		2					// custom variable scope - session-level
+		1,						// first slot 
+		'User Groups',					// custom variable name 
+		mw.config.get( 'wgUserGroups' ).toString(),	// custom variable value - an array covnerted to string, later using "contains" inside GA
+		2						// custom variable scope - session-level
 	]);
 
   }
