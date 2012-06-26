@@ -19,9 +19,9 @@ $wgHooks['SkinAfterBottomScripts'][]  = 'efGoogleAnalyticsHook';
 
 /* Dror - New */
 $wgGoogleAnalyticsAccount = '';
-$wgGoogleAnalyticsDomainName = '';
-$wgGoogleAnalyticsCookiePath = '';
-$wgGoogleAnalyticsCookiePathCopy = '';
+$wgGoogleAnalyticsDomainName = null;
+$wgGoogleAnalyticsCookiePath = null;
+$wgGoogleAnalyticsCookiePathCopy = null;
 $wgGoogleAnalyticsSegmentByGroup = false;
 $wgGoogleAnalyticsIgnoreGroups = array( 'bot', 'sysop' );
 
@@ -62,13 +62,13 @@ function efAddGoogleAnalytics() {
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', '{$wgGoogleAnalyticsAccount}']);
-  if( '{$wgGoogleAnalyticsDomainName}' != '' ) {
+  if( isset( $wgGoogleAnalyticsDomainName ) && $wgGoogleAnalyticsDomainName != '' ) {
   	_gaq.push(['_setDomainName', '{$wgGoogleAnalyticsDomainName}']);
   }
-  if( '{$wgGoogleAnalyticsCookiePath}' != '' ) {
+  if( isset( $wgGoogleAnalyticsCookiePath ) && $wgGoogleAnalyticsCookiePath != '' ) {
   	_gaq.push(['_setCookiePath', '{$wgGoogleAnalyticsCookiePath}']);
   }
-  if( '{$wgGoogleAnalyticsSegmentByGroup}' == true ) {
+  if( $wgGoogleAnalyticsSegmentByGroup == true ) {
 	  _gaq.push(['_setCustomVar',
 		1,						// first slot 
 		'User Groups',					// custom variable name 
@@ -80,7 +80,7 @@ function efAddGoogleAnalytics() {
   
   _gaq.push(['_trackPageview']);
 
-  if ( '{$wgGoogleAnalyticsCookiePath}' != '' && '{$wgGoogleAnalyticsCookiePathCopy}' != '' ) {
+  if ( isset( $wgGoogleAnalyticsCookiePath ) && isset( $wgGoogleAnalyticsCookiePathCopy ) ) {
 		_gaq.push(['_cookiePathCopy', '{$wgGoogleAnalyticsCookiePathCopy}']);
   }
 
