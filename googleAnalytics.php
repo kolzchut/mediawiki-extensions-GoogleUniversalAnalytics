@@ -62,10 +62,10 @@ function efAddGoogleAnalytics() {
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', '{$wgGoogleAnalyticsAccount}']);
-  if( isset( $wgGoogleAnalyticsDomainName ) && $wgGoogleAnalyticsDomainName != '' ) {
+  if( '{$wgGoogleAnalyticsDomainName}' != '' ) {
   	_gaq.push(['_setDomainName', '{$wgGoogleAnalyticsDomainName}']);
   }
-  if( isset( $wgGoogleAnalyticsCookiePath ) && $wgGoogleAnalyticsCookiePath != '' ) {
+  if( '{$wgGoogleAnalyticsCookiePath}' != '' ) {
   	_gaq.push(['_setCookiePath', '{$wgGoogleAnalyticsCookiePath}']);
   }
   if( $wgGoogleAnalyticsSegmentByGroup == true ) {
@@ -80,7 +80,7 @@ function efAddGoogleAnalytics() {
   
   _gaq.push(['_trackPageview']);
 
-  if ( isset( $wgGoogleAnalyticsCookiePath ) && isset( $wgGoogleAnalyticsCookiePathCopy ) ) {
+  if ( '{$wgGoogleAnalyticsCookiePath}' != '' && '{$wgGoogleAnalyticsCookiePathCopy}' != '' ) {
 		_gaq.push(['_cookiePathCopy', '{$wgGoogleAnalyticsCookiePathCopy}']);
   }
 
@@ -95,3 +95,4 @@ GASCRIPT;
 
 ///Alias for efAddGoogleAnalytics - backwards compatibility.
 function addGoogleAnalytics() { return efAddGoogleAnalytics(); }
+
