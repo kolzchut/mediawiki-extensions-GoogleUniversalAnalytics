@@ -5,7 +5,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 
 $wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
-	'name'           => 'Google Analytics Integration',
+	'name'           => 'Google Analytics Integration for Kol-Zchut',
 	'version'        => '3.0.3',
 	'author'         => 'Tim Laqua, Dror Snir',
 	'descriptionmsg' => 'googleanalytics-desc',
