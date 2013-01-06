@@ -1,3 +1,5 @@
+//v3.1.0: Optional "Enhanced Link Attribution" (https://support.google.com/analytics/bin/answer.py?hl=en&utm_id=ad&answer=2558867)
+
 <?php
 if ( !defined( 'MEDIAWIKI' ) ) {
 	die( 'This file is a MediaWiki extension, it is not a valid entry point' );
@@ -6,7 +8,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 $wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
 	'name'           => 'Google Analytics Integration for Kol-Zchut',
-	'version'        => '3.0.3',
+	'version'        => '3.1.0',
 	'author'         => 'Tim Laqua, Dror Snir',
 	'descriptionmsg' => 'googleanalytics-desc',
 	'url'            => 'https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration',
@@ -23,6 +25,8 @@ $wgGoogleAnalyticsDomainName = null;
 $wgGoogleAnalyticsCookiePath = null;
 $wgGoogleAnalyticsCookiePathCopy = null;
 $wgGoogleAnalyticsSegmentByGroup = false;
+$wgGoogleAnalyticsEnahncedLinkAttribution = false;
+	//if you enable this, you must also select "Use enhanced link attribution" in GA settings!
 $wgGoogleAnalyticsIgnoreGroups = array( 'bot', 'sysop' );
 
 /* Old - to be removed eventually */
@@ -43,7 +47,7 @@ function efGoogleAnalyticsHook( $skin, &$text ) {
 
 function efAddGoogleAnalytics() {
 	global $wgGoogleAnalyticsAccount, $wgGoogleAnalyticsIgnoreSysops, $wgGoogleAnalyticsIgnoreBots, $wgUser;
-	global $wgGoogleAnalyticsDomainName, $wgGoogleAnalyticsCookiePath, $wgGoogleAnalyticsCookiePathCopy, $wgGoogleAnalyticsSegmentByGroup;
+	global $wgGoogleAnalyticsDomainName, $wgGoogleAnalyticsCookiePath, $wgGoogleAnalyticsCookiePathCopy, $wgGoogleAnalyticsSegmentByGroup, $wgGoogleAnalyticsEnahncedLinkAttribution;
 
 	if ( $wgGoogleAnalyticsAccount === '' ) {
 		return "\n<!-- Set \$wgGoogleAnalyticsAccount to your account # provided by Google Analytics. -->\n";
@@ -61,6 +65,10 @@ function efAddGoogleAnalytics() {
 	return <<<GASCRIPT
 <script type="text/javascript">
   var _gaq = _gaq || [];
+  if( {$wgGoogleAnalyticsEnahncedLinkAttribution} ) {
+  	var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+	_gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  }
   _gaq.push(['_setAccount', '{$wgGoogleAnalyticsAccount}']);
   if( '{$wgGoogleAnalyticsDomainName}' != '' ) {
   	_gaq.push(['_setDomainName', '{$wgGoogleAnalyticsDomainName}']);
