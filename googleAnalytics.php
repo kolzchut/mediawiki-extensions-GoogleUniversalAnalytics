@@ -1,14 +1,12 @@
 <?php
-//v3.1.0: Optional "Enhanced Link Attribution" (https://support.google.com/analytics/bin/answer.py?hl=en&utm_id=ad&answer=2558867)
-
 if ( !defined( 'MEDIAWIKI' ) ) {
 	die( 'This file is a MediaWiki extension, it is not a valid entry point' );
 }
 
 $wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
-	'name'           => 'Google Analytics Integration for Kol-Zchut',
-	'version'        => '3.1.0',
+	'name'           => 'Google Analytics Integration',
+	'version'        => '3.0.3',
 	'author'         => 'Tim Laqua, Dror Snir',
 	'descriptionmsg' => 'googleanalytics-desc',
 	'url'            => 'https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration',
@@ -16,8 +14,8 @@ $wgExtensionCredits['other'][] = array(
 
 $wgExtensionMessagesFiles['googleAnalytics'] = dirname(__FILE__) . '/googleAnalytics.i18n.php';
 
-#$wgHooks['BeforePageDisplay'][]  = 'efGoogleAnalyticsHook';
-$wgHooks['SkinAfterBottomScripts'][]  = 'efGoogleAnalyticsHook';
+$wgHooks['BeforePageDisplay'][]  = 'efGoogleAnalyticsHook';
+#$wgHooks['SkinAfterBottomScripts'][]  = 'efGoogleAnalyticsHook';
 
 /* Dror - New */
 $wgGoogleAnalyticsAccount = '';
@@ -25,8 +23,6 @@ $wgGoogleAnalyticsDomainName = null;
 $wgGoogleAnalyticsCookiePath = null;
 $wgGoogleAnalyticsCookiePathCopy = null;
 $wgGoogleAnalyticsSegmentByGroup = false;
-$wgGoogleAnalyticsEnahncedLinkAttribution = false;
-	//if you enable this, you must also select "Use enhanced link attribution" in GA settings!
 $wgGoogleAnalyticsIgnoreGroups = array( 'bot', 'sysop' );
 
 /* Old - to be removed eventually */
@@ -34,12 +30,11 @@ $wgGoogleAnalyticsIgnoreSysops = true;
 $wgGoogleAnalyticsIgnoreBots = true;
 /* end old */
 
-/* temporary while not using BeforePageDisplayHook
 function efGoogleAnalyticsHook( &$out, &$skin ) {
 	$out->addHeadItem( 'GoogleAnalyticsIntegration', efAddGoogleAnalytics() );
 	return true;
 }
-*/
+
 function efGoogleAnalyticsHook( $skin, &$text ) {
 	$text .= efAddGoogleAnalytics();
 	return true;
@@ -47,7 +42,7 @@ function efGoogleAnalyticsHook( $skin, &$text ) {
 
 function efAddGoogleAnalytics() {
 	global $wgGoogleAnalyticsAccount, $wgGoogleAnalyticsIgnoreSysops, $wgGoogleAnalyticsIgnoreBots, $wgUser;
-	global $wgGoogleAnalyticsDomainName, $wgGoogleAnalyticsCookiePath, $wgGoogleAnalyticsCookiePathCopy, $wgGoogleAnalyticsSegmentByGroup, $wgGoogleAnalyticsEnahncedLinkAttribution;
+	global $wgGoogleAnalyticsDomainName, $wgGoogleAnalyticsCookiePath, $wgGoogleAnalyticsCookiePathCopy, $wgGoogleAnalyticsSegmentByGroup;
 
 	if ( $wgGoogleAnalyticsAccount === '' ) {
 		return "\n<!-- Set \$wgGoogleAnalyticsAccount to your account # provided by Google Analytics. -->\n";
@@ -65,32 +60,8 @@ function efAddGoogleAnalytics() {
 	return <<<GASCRIPT
 <script type="text/javascript">
   var _gaq = _gaq || [];
-  if( {$wgGoogleAnalyticsEnahncedLinkAttribution} ) {
-  	var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
-	_gaq.push(['_require', 'inpage_linkid', pluginUrl]);
-  }
   _gaq.push(['_setAccount', '{$wgGoogleAnalyticsAccount}']);
-  if( '{$wgGoogleAnalyticsDomainName}' != '' ) {
-  	_gaq.push(['_setDomainName', '{$wgGoogleAnalyticsDomainName}']);
-  }
-  if( '{$wgGoogleAnalyticsCookiePath}' != '' ) {
-  	_gaq.push(['_setCookiePath', '{$wgGoogleAnalyticsCookiePath}']);
-  }
-  if( $wgGoogleAnalyticsSegmentByGroup == true ) {
-	  _gaq.push(['_setCustomVar',
-		1,						// first slot 
-		'User Groups',					// custom variable name 
-		mw.config.get( 'wgUserGroups' ).toString(),	// custom variable value - an array covnerted to string, later using "contains" inside GA
-		2						// custom variable scope - session-level
-	]);
-
-  }
-  
   _gaq.push(['_trackPageview']);
-
-  if ( '{$wgGoogleAnalyticsCookiePath}' != '' && '{$wgGoogleAnalyticsCookiePathCopy}' != '' ) {
-		_gaq.push(['_cookiePathCopy', '{$wgGoogleAnalyticsCookiePathCopy}']);
-  }
 
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -100,7 +71,3 @@ function efAddGoogleAnalytics() {
 </script>
 GASCRIPT;
 }
-
-///Alias for efAddGoogleAnalytics - backwards compatibility.
-function addGoogleAnalytics() { return efAddGoogleAnalytics(); }
-
