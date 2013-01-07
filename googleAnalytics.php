@@ -34,12 +34,12 @@ function efGoogleAnalyticsHook( &$out, &$skin ) {
 	$out->addHeadItem( 'GoogleAnalyticsIntegration', efAddGoogleAnalytics() );
 	return true;
 }
-
+/*
 function efGoogleAnalyticsHook( $skin, &$text ) {
 	$text .= efAddGoogleAnalytics();
 	return true;
 }
-
+*/
 function efAddGoogleAnalytics() {
 	global $wgGoogleAnalyticsAccount, $wgGoogleAnalyticsIgnoreSysops, $wgGoogleAnalyticsIgnoreBots, $wgUser;
 	global $wgGoogleAnalyticsDomainName, $wgGoogleAnalyticsCookiePath, $wgGoogleAnalyticsCookiePathCopy, $wgGoogleAnalyticsSegmentByGroup;
