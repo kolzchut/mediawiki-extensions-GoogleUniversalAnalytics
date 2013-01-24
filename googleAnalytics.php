@@ -128,8 +128,7 @@ if( categories[1] != undefined ) {
   	  $script .= "
   function recordOutboundLink(category, action, label, value, noninteraction) {
     try {
-      var myTracker=_gat._getTrackerByName();
-      _gaq.push(['myTracker._trackEvent', category , action, label, value, noninteraction ]);
+      _gaq.push(['_trackEvent', category , action, label, value, noninteraction ]);
     } catch(err){}
   }
 
@@ -137,7 +136,7 @@ $(document).ready(function() {
   jQuery('a.external').click( function(e) {
      var url = $(this).attr( 'href' );
      var host = e.currentTarget.host.replace(':80','')
-     recordOutboundLink( 'Outbound Links', host, url, null, true );
+     recordOutboundLink( 'Outbound Links', host, url, undefined, true );
   });
 });";
   };
