@@ -1,6 +1,7 @@
 <?php
 //v3.1.0: Optional "Enhanced Link Attribution" (https://support.google.com/analytics/bin/answer.py?hl=en&utm_id=ad&answer=2558867)
 //v3.2.0: Optional external links tracking (on by default), Page Grouping by categories
+//v3.2.1: Bug fixes for Page Grouping
 
 if ( !defined( 'MEDIAWIKI' ) ) {
 	die( 'This file is a MediaWiki extension, it is not a valid entry point' );
@@ -9,7 +10,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 $wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
 	'name'           => 'Google Analytics Integration for Kol-Zchut',
-	'version'        => '3.2.0',
+	'version'        => '3.2.2',
 	'author'         => 'Tim Laqua, Dror Snir',
 	'descriptionmsg' => 'googleanalytics-desc',
 	'url'            => 'https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration',
@@ -100,6 +101,7 @@ function efAddGoogleAnalytics( User $user) {
 if( categories[1] != undefined ) {
   grouping = categories[1] + '/' + categories[0];
   _gaq.push(['_setPageGroup', '1', grouping]);
+  _gaq.push(['_setPageGroup', '2', categories[1]]);
 }";
   }
   
