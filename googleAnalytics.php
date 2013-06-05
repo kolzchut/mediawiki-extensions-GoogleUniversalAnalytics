@@ -20,6 +20,7 @@ $wgExtensionMessagesFiles['googleAnalytics'] = dirname(__FILE__) . '/googleAnaly
 
 $wgHooks['BeforePageDisplay'][]  = 'efGoogleAnalyticsHook';
 //$wgHooks['SkinAfterBottomScripts'][]  = 'efGoogleAnalyticsHook';
+$wgHooks['OutputPageMakeCategoryLinks'][] = 'onOutputPageMakeCategoryLinks'; // Get categories
 
 /* Dror - New */
 $wgGoogleAnalyticsAccount = null;
@@ -41,6 +42,17 @@ function efGoogleAnalyticsHook( $skin, &$text ) {
 	return true;
 }
 */
+
+$normalCats = array();
+
+/*
+ * We don't want to log hidden categories
+ */
+function onOutputPageMakeCategoryLinks( &$out, $categories, &$links ) {
+	global $normalCats;
+	$normalCats = array_keys( $categories, 'normal' );
+	return true;
+}
 
 function efGoogleAnalyticsHook( OutputPage &$out, Skin &$skin ) {
 	$user = $out->getUser();
@@ -96,14 +108,18 @@ function efAddGoogleAnalytics( User $user) {
   }
   
     if( isset( $wgGoogleAnalyticsPageGrouping ) && $wgGoogleAnalyticsPageGrouping == true ) {
-  	$script .= "
-  	categories = mw.config.get('wgCategories');
-if( categories[1] != undefined ) {
-  grouping = categories[1] + '/' + categories[0];
-  _gaq.push(['_setPageGroup', '1', grouping]);
-  _gaq.push(['_setPageGroup', '2', categories[1]]);
-}";
-  }
+    	global $normalCats; // We don't want to log hidden categories
+    	if ( count( $normalCats ) > 1 ) {
+    		$normalCats[0] = Title::makeTitleSafe( NS_CATEGORY, $normalCats[0] )->getText();
+    		$normalCats[1] = Title::makeTitleSafe( NS_CATEGORY, $normalCats[1] )->getText();
+    		$grouping = $normalCats[1] . '/' . $normalCats[0];
+    		$script .= "
+  _gaq.push(['_setPageGroup', '1', '{$grouping}']);
+  _gaq.push(['_setPageGroup', '2', '{$normalCats[1]}']);
+  _gaq.push(['_setPageGroup', '3', '{$normalCats[0]}']);
+";
+		};
+	};
   
   $script .= "
   _gaq.push(['_trackPageview']);";
