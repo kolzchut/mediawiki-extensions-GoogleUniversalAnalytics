@@ -55,17 +55,18 @@ function onOutputPageMakeCategoryLinks( &$out, $categories, &$links ) {
 }
 
 function efGoogleAnalyticsHook( OutputPage &$out, Skin &$skin ) {
-	$user = $out->getUser();
-	$out->addHeadItem( 'GoogleAnalyticsIntegration', efAddGoogleAnalytics( $user ) );
+	$out->addHeadItem( 'GoogleAnalyticsIntegration', efAddGoogleAnalytics( $out ) );
 	return true;
 }
 
-function efAddGoogleAnalytics( User $user) {
+function efAddGoogleAnalytics( OutputPage &$out) {
 	global $wgGoogleAnalyticsAccount, $wgGoogleAnalyticsIgnoreGroups,
 			$wgGoogleAnalyticsSegmentByGroup, $wgGoogleAnalyticsTrackExtLinks,
 			$wgGoogleAnalyticsDomainName, $wgGoogleAnalyticsCookiePath,	
 			$wgGoogleAnalyticsEnahncedLinkAttribution, $wgGoogleAnalyticsPageGrouping;
 			
+
+	$user = $out->getUser();
 
 	if ( is_null( $wgGoogleAnalyticsAccount ) ) {
 		$msg = "<!-- You forgot to configure Google Analytics. " . 
@@ -108,16 +109,22 @@ function efAddGoogleAnalytics( User $user) {
   }
   
     if( isset( $wgGoogleAnalyticsPageGrouping ) && $wgGoogleAnalyticsPageGrouping == true ) {
-    	global $normalCats; // We don't want to log hidden categories
-    	if ( count( $normalCats ) > 1 ) {
-    		$normalCats[0] = Title::makeTitleSafe( NS_CATEGORY, $normalCats[0] )->getText();
-    		$normalCats[1] = Title::makeTitleSafe( NS_CATEGORY, $normalCats[1] )->getText();
-    		$grouping = $normalCats[1] . '/' . $normalCats[0];
-    		$script .= "
-  _gaq.push(['_setPageGroup', '1', '{$grouping}']);
-  _gaq.push(['_setPageGroup', '2', '{$normalCats[1]}']);
-  _gaq.push(['_setPageGroup', '3', '{$normalCats[0]}']);
-";
+    	$title = $out->getTitle();
+		$ns = $title->getNamespace();
+    	if( isset( $ns ) && in_array( $ns, array( NS_CATEGORY, NS_FILE, NS_SPECIAL, NS_MEDIAWIKI ) ) ) {
+    		$script .= "\n/* Namespace excluded from page grouping */\n";
+    	} else {
+			global $normalCats; // We don't want to log hidden categories
+			if ( count( $normalCats ) > 1 ) {
+				$normalCats[0] = Title::makeTitleSafe( NS_CATEGORY, $normalCats[0] )->getText();
+				$normalCats[1] = Title::makeTitleSafe( NS_CATEGORY, $normalCats[1] )->getText();
+				$grouping = $normalCats[1] . '/' . $normalCats[0];
+				$script .= "
+	  _gaq.push(['_setPageGroup', '1', '{$grouping}']);
+	  _gaq.push(['_setPageGroup', '2', '{$normalCats[1]}']);
+	  _gaq.push(['_setPageGroup', '3', '{$normalCats[0]}']);
+	";
+			};
 		};
 	};
   
