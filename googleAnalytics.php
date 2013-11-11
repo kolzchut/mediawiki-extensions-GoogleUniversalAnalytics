@@ -30,6 +30,7 @@ $wgGoogleAnalyticsSegmentByGroup = false;
 $wgGoogleAnalyticsTrackExtLinks = true;
 $wgGoogleAnalyticsEnahncedLinkAttribution = false;
 	//if you enable this, you must also select "Use enhanced link attribution" in GA settings!
+$wgGoogleAnalyticsDemographics = false;	// Use dc.js to track demographics
 $wgGoogleAnalyticsIgnoreGroups = array( 'bot', 'sysop' );
 
 /* the following config variables are no longer in use: */
@@ -63,7 +64,8 @@ function efAddGoogleAnalytics( OutputPage &$out) {
 	global $wgGoogleAnalyticsAccount, $wgGoogleAnalyticsIgnoreGroups,
 			$wgGoogleAnalyticsSegmentByGroup, $wgGoogleAnalyticsTrackExtLinks,
 			$wgGoogleAnalyticsDomainName, $wgGoogleAnalyticsCookiePath,	
-			$wgGoogleAnalyticsEnahncedLinkAttribution, $wgGoogleAnalyticsPageGrouping;
+			$wgGoogleAnalyticsEnahncedLinkAttribution, $wgGoogleAnalyticsPageGrouping,
+			$wgGoogleAnalyticsDemographics;
 			
 
 	$user = $out->getUser();
@@ -135,11 +137,16 @@ function efAddGoogleAnalytics( OutputPage &$out) {
 		$script .= "
 		_gaq.push(['_cookiePathCopy', '{$wgGoogleAnalyticsCookiePath}']);";
   }
-  
+
+  if( isset( $wgGoogleAnalyticsDemographics) && $wgGoogleAnalyticsDemographics == true ) {
+	  $gaSource = "('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js'";
+  } else {
+	  $gaSource = "('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'";
+  }
   $script .="
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    ga.src = {$gaSource};
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();";
   
@@ -168,7 +175,7 @@ $(document).ready(function() {
 
   // And finally...
   $script .="
-  </script>";
+  </script>\n";
 
   return $script;
 }
