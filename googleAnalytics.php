@@ -2,6 +2,7 @@
 //v3.1.0: Optional "Enhanced Link Attribution" (https://support.google.com/analytics/bin/answer.py?hl=en&utm_id=ad&answer=2558867)
 //v3.2.0: Optional external links tracking (on by default), Page Grouping by categories
 //v3.2.1: Bug fixes for Page Grouping
+//v3.2.2: Make sure _setAccount is always first, in case another extension pushes something before this loads
 
 if ( !defined( 'MEDIAWIKI' ) ) {
 	die( 'This file is a MediaWiki extension, it is not a valid entry point' );
@@ -86,11 +87,21 @@ function efAddGoogleAnalytics( OutputPage &$out) {
 	}
 	
    /* Else: we load the script */
-   
+   /* Starts with regular GA.js queue initializing, but adds
+	* custom code to make sure '_setAccount' is always first (using 'unshift').
+    * This allows other extensions to shove things in the queue
+    * without knowing anything about it, by doing something like (don't forget ResourceLoader encapsulation!):
+    * var _gaq = _gaq || []; _gaq.push(cmd);
+    */
    $script = "<script>
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', '{$wgGoogleAnalyticsAccount}']);";
-    
+  cmd = ['_setAccount', '{$wgGoogleAnalyticsAccount}'];
+  if (!_gaq.unshift){
+    _gaq.push(cmd);
+}else {
+    _gaq.unshift(cmd);
+}";
+
   if( isset( $wgGoogleAnalyticsDomainName ) ) {
   	$script .= "
   _gaq.push(['_setDomainName', '{$wgGoogleAnalyticsDomainName}']);";
@@ -174,8 +185,7 @@ $(document).ready(function() {
   };
 
   // And finally...
-  $script .="
-  </script>\n";
+  $script .="\n</script>\n";
 
   return $script;
 }
