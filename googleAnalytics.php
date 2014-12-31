@@ -17,6 +17,7 @@ $wgExtensionCredits['other'][] = array(
 	'url'            => 'https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration',
 );
 
+$wgMessagesDirs['googleAnalytics'] = __DIR__ . '/i18n';
 $wgExtensionMessagesFiles['googleAnalytics'] = dirname(__FILE__) . '/googleAnalytics.i18n.php';
 
 $wgHooks['BeforePageDisplay'][]  = 'efGoogleAnalyticsHook';
