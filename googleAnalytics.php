@@ -1,8 +1,4 @@
 <?php
-//v3.1.0: Optional "Enhanced Link Attribution" (https://support.google.com/analytics/bin/answer.py?hl=en&utm_id=ad&answer=2558867)
-//v3.2.0: Optional external links tracking (on by default), Page Grouping by categories
-//v3.2.1: Bug fixes for Page Grouping
-//v3.2.2: Make sure _setAccount is always first, in case another extension pushes something before this loads
 
 if ( !defined( 'MEDIAWIKI' ) ) {
 	die( 'This file is a MediaWiki extension, it is not a valid entry point' );
@@ -11,7 +7,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 $wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
 	'name'           => 'Google Analytics Integration for Kol-Zchut',
-	'version'        => '3.2.2',
+	'version'        => '3.2.3',
 	'author'         => 'Tim Laqua, Dror Snir',
 	'descriptionmsg' => 'googleanalytics-desc',
 	'url'            => 'https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration',
@@ -24,6 +20,8 @@ $wgHooks['BeforePageDisplay'][]  = 'efGoogleAnalyticsHook';
 //$wgHooks['SkinAfterBottomScripts'][]  = 'efGoogleAnalyticsHook';
 $wgHooks['OutputPageMakeCategoryLinks'][] = 'onOutputPageMakeCategoryLinks'; // Get categories
 
+$wgGroupPermissions['bot']['noanalytics'] = true;
+
 /* Dror - New */
 $wgGoogleAnalyticsAccount = null;
 $wgGoogleAnalyticsDomainName = null;
@@ -33,21 +31,10 @@ $wgGoogleAnalyticsTrackExtLinks = true;
 $wgGoogleAnalyticsEnahncedLinkAttribution = false;
 	//if you enable this, you must also select "Use enhanced link attribution" in GA settings!
 $wgGoogleAnalyticsDemographics = false;	// Use dc.js to track demographics
-$wgGoogleAnalyticsIgnoreGroups = array( 'bot', 'sysop' );
 
-/* the following config variables are no longer in use: */
-//$wgGoogleAnalyticsIgnoreSysops = true;
-//$wgGoogleAnalyticsIgnoreBots = true;
 
-/*
-function efGoogleAnalyticsHook( $skin, &$text ) {
-	$out->addHeadItem( 'GoogleAnalyticsIntegration', efAddGoogleAnalytics() );
-	return true;
-}
-*/
 
 $normalCats = array();
-
 /*
  * We don't want to log hidden categories
  */
@@ -63,28 +50,21 @@ function efGoogleAnalyticsHook( OutputPage &$out, Skin &$skin ) {
 }
 
 function efAddGoogleAnalytics( OutputPage &$out) {
-	global $wgGoogleAnalyticsAccount, $wgGoogleAnalyticsIgnoreGroups,
+	global $wgGoogleAnalyticsAccount,
 			$wgGoogleAnalyticsSegmentByGroup, $wgGoogleAnalyticsTrackExtLinks,
 			$wgGoogleAnalyticsDomainName, $wgGoogleAnalyticsCookiePath,	
 			$wgGoogleAnalyticsEnahncedLinkAttribution, $wgGoogleAnalyticsPageGrouping,
 			$wgGoogleAnalyticsDemographics;
-			
 
-	$user = $out->getUser();
 
 	if ( is_null( $wgGoogleAnalyticsAccount ) ) {
 		$msg = "<!-- You forgot to configure Google Analytics. " . 
 				"Please set \$wgGoogleAnalyticsAccount to your Google Analytics account number. -->\n";
 		return $msg;
-
 	}
-	
-	if ( isset( $wgGoogleAnalyticsIgnoreGroups ) && is_array( $wgGoogleAnalyticsIgnoreGroups ) ) {
-		$excluded_groups = array_intersect( $wgGoogleAnalyticsIgnoreGroups, $user->getEffectiveGroups() );
-		if ( count( $excluded_groups ) > 0 ) {
-			$excluded_groups = implode( ', ', $excluded_groups );
-			return "\n<!-- Google Analytics tracking is disabled for the following groups: {$excluded_groups} -->\n";
-		}	
+
+	if ( $out->getUser()->isAllowed( 'noanalytics' ) ) {
+		return "\n<!-- Google Analytics tracking is disabled for this user -->\n";
 	}
 	
    /* Else: we load the script */

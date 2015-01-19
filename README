@@ -1,0 +1,31 @@
+Google Analytics extension for MediaWiki
+========================================
+
+This extension the Google Analytics tracking snippet to every page.
+
+* Users with the "noanalytics" right are exempt from tracking;
+  by default this is applied only to bots
+
+
+## Configuration ##
+
+* ```$wgGoogleAnalyticsAccount```: your analytics account number
+
+
+## Changelog ##
+
+### v3.2.3
+use the "noanalytics" group permission to exempt users from tracking, instead of the
+previous ```$wgGoogleAnalyticsIgnoreGroups```.
+
+### v3.2.2
+Make sure ```_setAccount``` is always first, in case another extension pushes something before this loads
+
+### v3.2.1
+Bug fixes for Page Grouping
+
+### v3.2.0
+Optional external links tracking (on by default), Page Grouping by categories
+
+### v3.1.0
+Optional ["Enhanced Link Attribution"](https://support.google.com/analytics/bin/answer.py?hl=en&utm_id=ad&answer=2558867)
