@@ -7,8 +7,8 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 $wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
 	'name'           => 'Google Analytics Integration for Kol-Zchut',
-	'version'        => '3.2.3',
-	'author'         => 'Tim Laqua, Dror Snir',
+	'version'        => '3.2.4',
+	'author'         => 'Tim Laqua, Dror S.',
 	'descriptionmsg' => 'googleanalytics-desc',
 	'url'            => 'https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration',
 );
@@ -64,7 +64,8 @@ function efAddGoogleAnalytics( OutputPage &$out) {
 	}
 
 	if ( $out->getUser()->isAllowed( 'noanalytics' ) ) {
-		return "\n<!-- Google Analytics tracking is disabled for this user -->\n";
+		$msg = wfMessage( 'googleanalytics-disabled' )->text();
+		return "\n<!-- {$msg} -->\n";
 	}
 	
    /* Else: we load the script */
@@ -74,14 +75,16 @@ function efAddGoogleAnalytics( OutputPage &$out) {
     * without knowing anything about it, by doing something like (don't forget ResourceLoader encapsulation!):
     * var _gaq = _gaq || []; _gaq.push(cmd);
     */
-   $script = "<script>
-  var _gaq = _gaq || [];
-  cmd = ['_setAccount', '{$wgGoogleAnalyticsAccount}'];
-  if (!_gaq.unshift){
-    _gaq.push(cmd);
-}else {
-    _gaq.unshift(cmd);
-}";
+   $script = <<<JS
+<script>
+	var _gaq = _gaq || [];
+	cmd = ['_setAccount', '{$wgGoogleAnalyticsAccount}'];
+	if (!_gaq.unshift){
+		_gaq.push(cmd);
+	} else {
+	 _gaq.unshift(cmd);
+	}
+JS;
 
   if( isset( $wgGoogleAnalyticsDomainName ) ) {
   	$script .= "
@@ -102,7 +105,7 @@ function efAddGoogleAnalytics( OutputPage &$out) {
 	]);";
   }
   
-    if( isset( $wgGoogleAnalyticsPageGrouping ) && $wgGoogleAnalyticsPageGrouping == true ) {
+    if( $wgGoogleAnalyticsPageGrouping === true ) {
     	$title = $out->getTitle();
 		$ns = $title->getNamespace();
     	if( isset( $ns ) && in_array( $ns, array( NS_CATEGORY, NS_FILE, NS_SPECIAL, NS_MEDIAWIKI ) ) ) {
@@ -130,7 +133,7 @@ function efAddGoogleAnalytics( OutputPage &$out) {
 		_gaq.push(['_cookiePathCopy', '{$wgGoogleAnalyticsCookiePath}']);";
   }
 
-  if( isset( $wgGoogleAnalyticsDemographics) && $wgGoogleAnalyticsDemographics == true ) {
+  if( $wgGoogleAnalyticsDemographics === true ) {
 	  $gaSource = "('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js'";
   } else {
 	  $gaSource = "('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'";
@@ -142,27 +145,35 @@ function efAddGoogleAnalytics( OutputPage &$out) {
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();";
   
-  if( isset( $wgGoogleAnalyticsEnahncedLinkAttribution) && $wgGoogleAnalyticsEnahncedLinkAttribution == true ) {
+  if( $wgGoogleAnalyticsEnahncedLinkAttribution === true ) {
   	$script .= "
   	var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
 	_gaq.push(['_require', 'inpage_linkid', pluginUrl]);";
   }
   
-  if( isset( $wgGoogleAnalyticsTrackExtLinks ) && $wgGoogleAnalyticsTrackExtLinks == true ) {
-  	  $script .= "
-  function recordOutboundLink(category, action, label, value, noninteraction) {
-    try {
-      _gaq.push(['_trackEvent', category , action, label, value, noninteraction ]);
-    } catch(err){}
-  }
+  if( $wgGoogleAnalyticsTrackExtLinks === true ) {
+  	  $script .= <<<JS
 
-$(document).ready(function() {
-  jQuery('a.external').click( function(e) {
-     var url = $(this).attr( 'href' );
-     var host = e.currentTarget.host.replace(':80','')
-     recordOutboundLink( 'Outbound Links', host, url, undefined, true );
-  });
-});";
+	function trackEvent(category, action, label, value, noninteraction) {
+		try {
+		  _gaq.push(['_trackEvent', category , action, label, value, noninteraction ]);
+		} catch(err) {
+		}
+	}
+
+	function trackOutboundLink( link ) {
+
+	}
+
+	$(document).ready( function() {
+	  jQuery( '.mw-body' ).on( 'click', 'a.external, a.extiw', function( e ) {
+	     var url = $( this ).attr( 'href' );
+	     var host = e.currentTarget.host.replace( ':80', '' );
+	     var category = $(this).hasClass( 'external' ) ? 'Outbound Links' : 'Outbound Interwiki';
+	     trackEvent( category, host, url, undefined, true );
+	  });
+	});
+JS;
   };
 
   // And finally...
