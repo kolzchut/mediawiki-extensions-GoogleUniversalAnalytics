@@ -8,7 +8,10 @@ $GLOBALS['wgExtensionCredits']['other'][] = array(
 	'path'           => __FILE__,
 	'name'           => 'Google Analytics Integration for Kol-Zchut',
 	'version'        => '3.2.4',
-	'author'         => 'Tim Laqua, Dror S.',
+	'author'         => array(
+		'Tim Laqua',
+		'Dror S. [FFS] ([http://www.kolzchut.org.il Kol-Zchut])'
+	),
 	'descriptionmsg' => 'googleanalytics-desc',
 	'url'            => 'https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration',
 );
