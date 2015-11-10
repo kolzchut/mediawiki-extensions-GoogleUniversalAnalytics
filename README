@@ -39,13 +39,15 @@ There are the following differences:
 
 ## Changelog ##
 
+### v3.2.6
+Bugfix: $wgGoogleAnalyticsOtherCode was added even if user/page were excluded.
+
 ### v3.2.5
 - Improved documentation
 - Partial rebase (we still much diverge) against upstream (v3.0.1):
     * Allow to ignore namespaces and specific pages/special pages
       ($wgGoogleAnalyticsIgnoreNsIDs, $wgGoogleAnalyticsIgnorePages, $wgGoogleAnalyticsIgnoreSpecials)
     * add $wgGoogleAnalyticsOtherCode to add any other analytics code desired.
-
 
 ### v3.2.4
 Track interwiki & interlanguage links

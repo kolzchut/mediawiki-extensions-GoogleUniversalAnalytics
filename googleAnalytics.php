@@ -6,7 +6,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
 	'name' => 'Google Analytics Integration for Kol-Zchut',
-	'version' => '3.2.5 (based on upstream 3.0.1)',
+	'version' => '3.2.6 (based on upstream 3.0.1)',
 	'author' => array(
 		'Tim Laqua',
 		'[https://www.mediawiki.org/wiki/User:DavisNT Davis Mosenkovs]',

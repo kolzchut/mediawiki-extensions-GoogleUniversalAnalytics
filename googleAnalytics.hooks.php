@@ -36,7 +36,7 @@ class GoogleAnalyticsHooks {
 			return self::messageToComment( 'googleanalytics-disabled-for-user' );
 		}
 
-		if ( self::isIgnoredPage( $out ) ) {
+		if ( self::isIgnoredPage( $out->getTitle() ) ) {
 			return self::messageToComment( 'googleanalytics-disabled-for-page' );
 		}
 
@@ -159,24 +159,29 @@ JS;
 	public static function onSkinAfterBottomScripts( Skin $skin, &$text = '' ) {
 		global $wgGoogleAnalyticsOtherCode;
 
-		if ( $wgGoogleAnalyticsOtherCode !== null ) {
-			$text .= $wgGoogleAnalyticsOtherCode . PHP_EOL;
+		if ( $wgGoogleAnalyticsOtherCode === null
+			 || $skin->getUser()->isAllowed( 'noanalytics' )
+		     || self::isIgnoredPage( $skin->getTitle() )
+		) {
+			return true;
 		}
+
+		$text .= $wgGoogleAnalyticsOtherCode . PHP_EOL;
 
 		return true;
 	}
 
-	function isIgnoredPage( OutputPage $out ) {
+	function isIgnoredPage( Title $title ) {
 		global $wgGoogleAnalyticsIgnoreNsIDs,
 		       $wgGoogleAnalyticsIgnorePages,
 		       $wgGoogleAnalyticsIgnoreSpecials;
 
 
-		return count( array_filter( $wgGoogleAnalyticsIgnoreSpecials, function ( $v ) use ( $out ) {
-					return $out->getTitle()->isSpecial( $v );
+		return count( array_filter( $wgGoogleAnalyticsIgnoreSpecials, function ( $v ) use ( $title ) {
+					return $title->isSpecial( $v );
 				} ) ) > 0
-				|| in_array( $out->getTitle()->getNamespace(), $wgGoogleAnalyticsIgnoreNsIDs, true )
-				|| in_array( $out->getTitle()->getPrefixedText(), $wgGoogleAnalyticsIgnorePages, true );
+				|| in_array( $title->getNamespace(), $wgGoogleAnalyticsIgnoreNsIDs, true )
+				|| in_array( $title->getPrefixedText(), $wgGoogleAnalyticsIgnorePages, true );
 	}
 
 	protected function messageToComment( $messageName = '' ) {
