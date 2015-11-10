@@ -1,18 +1,54 @@
 Google Analytics extension for MediaWiki
 ========================================
 
-This extension the Google Analytics tracking snippet to every page.
+This extension adds the Google Analytics tracking snippet to every page.
 
-* Users with the "noanalytics" right are exempt from tracking;
-  by default this is applied only to bots
+**Please note**: this is a fork of [Extension:GoogleAnalytics](https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration).
+There are the following differences:
+
+* We still use the older ```ga.js``` instead of Universal Analytics
+* We have a few more options (see #Configuration)
+* Upstream has some test coverage while we don't
+* There's a slightly different code structure.
 
 
 ## Configuration ##
 
-* ```$wgGoogleAnalyticsAccount```: your analytics account number
+* Users with the "noanalytics" right are exempt from tracking;
+  by default this is applied only to bots
+* ```$wgGoogleAnalyticsAccount```: your analytics account number (e.g. "UA-12345678-1")
+* ```$wgGoogleAnalyticsDomainName```:  see [setDomainName].
+* ```$wgGoogleAnalyticsCookiePath```: See [setCookiePath].
+* ```$wgGoogleAnalyticsEnahncedLinkAttribution```: Enables [EnhancedLinkAttribution]. Off by default.
+     You must also enable "Use enhanced link attribution" in GA settings.
+* ```$wgGoogleAnalyticsSegmentByGroup```: Push the user's groups into a custom var, allowing later
+     segmentation in the GA dashboard. Off by default.
+* ```$wgGoogleAnalyticsTrackExtLinks```: track clicks on external links (including interwiki and
+     interlanguage) using events. On by default.
+* ```$wgGoogleAnalyticsDemographics```: Use DoubleClick's dc.js instead of ga.js, in order to track
+     demographics. Seems to be blocked more by users. See [dc.js]
+* ```$wgGoogleAnalyticsPageGrouping```: Kol-Zchut specific! off by default. Classify pages into
+     Content Groups, based on the first 2 visible categories.
+
+
+[setDomainName]: https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiDomainDirectory#_gat.GA_Tracker_._setDomainName
+[setCookiePath]: https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiDomainDirectory#_gat.GA_Tracker_._setCookiePath
+[dc.js]: https://support.google.com/analytics/answer/2444872
+[EnhancedLinkAttribution]: https://support.google.com/analytics/answer/2558867
 
 
 ## Changelog ##
+
+### v3.2.5
+- Improved documentation
+- Partial rebase (we still much diverge) against upstream (v3.0.1):
+    * Allow to ignore namespaces and specific pages/special pages
+      ($wgGoogleAnalyticsIgnoreNsIDs, $wgGoogleAnalyticsIgnorePages, $wgGoogleAnalyticsIgnoreSpecials)
+    * add $wgGoogleAnalyticsOtherCode to add any other analytics code desired.
+
+
+### v3.2.4
+Track interwiki & interlanguage links
 
 ### v3.2.3
 use the "noanalytics" group permission to exempt users from tracking, instead of the
