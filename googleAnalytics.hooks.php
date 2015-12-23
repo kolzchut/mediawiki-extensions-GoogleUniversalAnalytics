@@ -69,12 +69,14 @@ JS;
 		}
 		if ( isset( $wgGoogleAnalyticsSegmentByGroup ) && $wgGoogleAnalyticsSegmentByGroup === true ) {
 			$script .= "
-	  _gaq.push(['_setCustomVar',
-		1,								// first slot
-		'User Groups',					// custom variable name
-		mw.config.get( 'wgUserGroups' ).toString(),	// custom variable filtered in GA
-		2						// custom variable scope - session-level
-	]);";
+	window.RLQ.push( function () {
+		_gaq.push(['_setCustomVar',
+			1,								// first slot
+			'User Groups',					// custom variable name
+			mw.config.get( 'wgUserGroups' ).toString(),	// custom variable filtered in GA
+			2						// custom variable scope - session-level
+		]);
+	});";
 		}
 
 		if ( isset( $wgGoogleAnalyticsPageGrouping ) && $wgGoogleAnalyticsPageGrouping === true ) {
@@ -135,7 +137,7 @@ JS;
 		} catch(err) { }
 	}
 
-	$( document ).ready( function() {
+	window.RLQ.push( function () {
 		$( 'body' ).on( 'click', 'a.external, a.extiw, .interlanguage-link > a', function( e ) {
 			var url = $( this ).attr( 'href' );
 			var host = e.currentTarget.host.replace( ':80', '' );
