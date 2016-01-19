@@ -4,5 +4,5 @@
 			"Byrial"
 		]
 	},
-	"googleanalytics-desc": "Indssætter Google Analytics-script (ga.js) på MediaWiki-sider til sporing"
+	"googleuniversalanalytics-desc": "Indssætter Google Analytics-script (ga.js) på MediaWiki-sider til sporing"
 }

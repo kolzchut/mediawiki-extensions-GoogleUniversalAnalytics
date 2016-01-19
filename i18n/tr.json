@@ -4,6 +4,6 @@
 			"Joseph"
 		]
 	},
-	"googleanalytics-desc": "MedyaViki sayfalarını izlemek için Google Analytics scriptini (ga.js) ekler",
+	"googleuniversalanalytics-desc": "MedyaViki sayfalarını izlemek için Google Analytics scriptini (ga.js) ekler",
 	"right-noanalytics": "Google Analytics izlemesinden muafiyet"
 }

@@ -4,40 +4,52 @@ Google Analytics extension for MediaWiki
 This extension adds the Google Analytics tracking snippet to every page.
 
 **Please note**: this is a fork of [Extension:GoogleAnalytics](https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration).
-There are the following differences:
-
-* We still use the older ```ga.js``` instead of Universal Analytics
-* We have a few more options (see #Configuration)
-* Upstream has some test coverage while we don't
-* There's a slightly different code structure.
+The following differences exist:
+- Somewhat different code structure
+- We have a few more options (see [#Configuration]):
+  - Options for setting cookie path / domain
+  - Enhanced Link Attribution
+  - Remarketing plugin
+  - Tracking user groups using a custom dimension
 
 
 ## Configuration ##
 
-* Users with the "noanalytics" right are exempt from tracking;
-  by default this is applied only to bots
-* ```$wgGoogleAnalyticsAccount```: your analytics account number (e.g. "UA-12345678-1")
-* ```$wgGoogleAnalyticsDomainName```:  see [setDomainName].
-* ```$wgGoogleAnalyticsCookiePath```: See [setCookiePath].
-* ```$wgGoogleAnalyticsEnahncedLinkAttribution```: Enables [EnhancedLinkAttribution]. Off by default.
-     You must also enable "Use enhanced link attribution" in GA settings.
-* ```$wgGoogleAnalyticsSegmentByGroup```: Push the user's groups into a custom var, allowing later
-     segmentation in the GA dashboard. Off by default.
-* ```$wgGoogleAnalyticsTrackExtLinks```: track clicks on external links (including interwiki and
-     interlanguage) using events. On by default.
-* ```$wgGoogleAnalyticsDemographics```: Use DoubleClick's dc.js instead of ga.js, in order to track
-     demographics. Seems to be blocked more by users. See [dc.js]
-* ```$wgGoogleAnalyticsPageGrouping```: Kol-Zchut specific! off by default. Classify pages into
-     Content Groups, based on the first 2 visible categories.
+### Configuration options
+  
+| Variable                                  | Value | Explanation                                                                                                                                                                    |
+|-------------------------------------------|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| $wgGoogleAnalyticsAccount                 | null  | Your analytics account number (e.g. "UA-12345678-1")                                                                                                                           |
+| $wgGoogleAnalyticsAnonymizeIP             | true  | Instruct Google anonymize the user's IP (by removing the last octet, or last 80 bits of IPv6 address) before any additional processing on Google's servers; see [anonymizeIp]. |
+| $wgGoogleAnalyticsCookiePath              | null  | Useful if you need to [restrict tracking to a single sub-directory]; set to something like '/tracked-dir'.                                                                       |
+| $wgGoogleAnalyticsEnahncedLinkAttribution | false | Enables [Enhanced Link Attribution]. You also need to [enable Enhanced Link Attribution in the reports interface].                                                             |
+| $wgGoogleAnalyticsSegmentByGroup          | false | Push the user's groups into a custom var, allowing later segmentation in the GA dashboard. See ```$wgGoogleAnalyticsSegmentByGroupDimension``` as well.                        |
+| $wgGoogleAnalyticsSegmentByGroupDimension | 1     | If $wgGoogleAnalyticsSegmentByGroup is enabled, this is used to determine the custom dimension number to be used.                                                              |
+| $wgGoogleAnalyticsTrackExtLinks           | true  | Track clicks on external links (including interwiki and interlanguage) using non-interaction events.                                                                           |
+| $wgGoogleAnalyticsRemarketing             | false | Enables remarketing and advertising reporting. You also need to [enable remarketing in property settings]. You can read more about [remarketing in Google Analytics].          |
+| $wgGoogleAnalyticsPageGrouping            | false | Kol-Zchut specific! Classify pages into Content Groups, based on the first 2 visible categories. You must set up content groups in advance.                                    |  
+
+[anonymizeIp]: https://support.google.com/analytics/answer/2763052
+[enable remarketing in property settings]: https://support.google.com/analytics/answer/2444872
+[remarketing in Google Analytics]: https://support.google.com/analytics/answer/2611268
+[Enhanced Link Attribution]: https://support.google.com/analytics/answer/2558867
+[enable Enhanced Link Attribution in the reports interface]: https://support.google.com/analytics/answer/2558867#EnableEnhancedLinkAttribution
+[restrict tracking to a single sub-directory]: https://support.google.com/analytics/answer/6205202#subDirectoriesShareCookies
+
+### Exemption from tracking
+Users with the "noanalytics" right are exempt from tracking; by default this is applied only to bots.
 
 
-[setDomainName]: https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiDomainDirectory#_gat.GA_Tracker_._setDomainName
-[setCookiePath]: https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiDomainDirectory#_gat.GA_Tracker_._setCookiePath
-[dc.js]: https://support.google.com/analytics/answer/2444872
-[EnhancedLinkAttribution]: https://support.google.com/analytics/answer/2558867
-
+## Roadmap
+- Update the extension to MediaWiki 1.25 loading standard (extension.json)
+- Create a new hook so can split out Kol-Zchut-specific parts
 
 ## Changelog ##
+
+### v3.3.0
+- Finally switch to Universal Analytics (which upstream did long ago)
+- Move external link tracking to a ResourceLoader module
+
 
 ### v3.2.6
 Bugfix: $wgGoogleAnalyticsOtherCode was added even if user/page were excluded.
@@ -48,6 +60,7 @@ Bugfix: $wgGoogleAnalyticsOtherCode was added even if user/page were excluded.
     * Allow to ignore namespaces and specific pages/special pages
       ($wgGoogleAnalyticsIgnoreNsIDs, $wgGoogleAnalyticsIgnorePages, $wgGoogleAnalyticsIgnoreSpecials)
     * add $wgGoogleAnalyticsOtherCode to add any other analytics code desired.
+	* we still use the older ga.js
 
 ### v3.2.4
 Track interwiki & interlanguage links
@@ -66,4 +79,4 @@ Bug fixes for Page Grouping
 Optional external links tracking (on by default), Page Grouping by categories
 
 ### v3.1.0
-Optional ["Enhanced Link Attribution"](https://support.google.com/analytics/bin/answer.py?hl=en&utm_id=ad&answer=2558867)
+Optional ["Enhanced Link Attribution"](https://support.google.com/analytics/answer/2558867)

@@ -6,6 +6,6 @@
 			"Yona b"
 		]
 	},
-	"googleanalytics-desc": "הוספת סקריפט של Google Analytics (בשם ga.js) לעמודי מדיה־ויקי לצורכי מעקב.",
+	"googleuniversalanalytics-desc": "הוספת סקריפט של Google Analytics (בשם ga.js) לעמודי מדיה־ויקי לצורכי מעקב.",
 	"right-noanalytics": "לא קשורים למעקב Google Analytics"
 }

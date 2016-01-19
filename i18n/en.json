@@ -1,12 +1,14 @@
 {
     "@metadata": {
         "authors": [
-            "Tim Laqua"
+            "Tim Laqua",
+            "Davis Mosenkovs",
+			"Dror S [FFS]"
         ]
     },
-    "googleanalytics-desc": "Inserts Google Analytics script (ga.js) in to MediaWiki pages for tracking",
-    "googleanalytics-disabled-for-user": "Google Analytics tracking is disabled for this user",
-    "googleanalytics-disabled-for-page": "Google Analytics tracking is disabled on this page",
-    "googleanalytics-error-not-configured": "Error: you must set $wgGoogleAnalyticsAccount to your Google Analytics account number (e.g. \"UA-12345678-1\").",
-    "right-noanalytics": "Exempt from Google Analytics tracking"
+    "googleuniversalanalytics-desc": "Inserts Google Universal Analytics (and/or other web analytics) scripts into MediaWiki pages for tracking",
+    "right-noanalytics": "Exempted from web analytics tracking",
+    "googleuniversalanalytics-disabled-for-user": "Google Analytics tracking is disabled for this user",
+    "googleuniversalanalytics-disabled-for-page": "Google Analytics tracking is disabled on this page",
+    "googleuniversalanalytics-error-not-configured": "Error: you must set $wgGoogleAnalyticsAccount to your Google Analytics account number (e.g. \"UA-12345678-1\")."
 }

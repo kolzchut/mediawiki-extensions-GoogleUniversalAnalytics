@@ -5,6 +5,6 @@
 			"Malafaya"
 		]
 	},
-	"googleanalytics-desc": "Insere o script Google Analytics (ga.js) nas páginas MediaWiki para rastreio",
+	"googleuniversalanalytics-desc": "Insere o script Google Analytics (ga.js) nas páginas MediaWiki para rastreio",
 	"right-noanalytics": "Isento do rastreio do Google Analytics"
 }

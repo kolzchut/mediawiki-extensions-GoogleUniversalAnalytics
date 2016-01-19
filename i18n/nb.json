@@ -5,5 +5,5 @@
 			"Njardarlogar"
 		]
 	},
-	"googleanalytics-desc": "Setter inn Google Analytics-skript (ga.js) på MediaWiki-sider for sporing"
+	"googleuniversalanalytics-desc": "Setter inn Google Analytics-skript (ga.js) på MediaWiki-sider for sporing"
 }
