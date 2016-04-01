@@ -6,13 +6,13 @@ class GoogleUniversalAnalyticsHooks {
 
 	 // We don't want to log hidden categories,
 	 // this is the only place where that distinction is available
-	function onOutputPageMakeCategoryLinks( OutputPage &$out, $categories, &$links ) {
+	static function onOutputPageMakeCategoryLinks( OutputPage &$out, $categories, &$links ) {
 		self::$normalCats = array_keys( $categories, 'normal' );
 
 		return true;
 	}
 
-	function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
+	static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
 		$out->addHeadItem( 'GoogleUniversalAnalyticsIntegration', self::addGoogleAnalytics( $out ) );
 
 		return true;
