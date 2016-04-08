@@ -4,7 +4,7 @@
 	$( 'body' ).on( 'click', 'a.external, a.extiw, .interlanguage-link > a', function( e ) {
 		var targetUrl = $( this ).attr( 'href' );
 		var targetHost = e.currentTarget.host.replace( /:\d{2,4}/g, '' );
-		var linkType = '';
+		var linkType;
 		if( $(this).hasClass( 'external' ) ) {
 			linkType = 'Outbound Links';
 		} else if( $(this).hasClass( 'extiw' ) ) {

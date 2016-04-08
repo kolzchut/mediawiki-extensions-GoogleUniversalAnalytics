@@ -1,0 +1,6 @@
+[submodule "modules/riveted"]
+	path = modules/riveted
+	url = https://github.com/kolzchut/riveted.git
+[submodule "modules/jquery.scrolldepth"]
+	path = modules/jquery.scrolldepth
+	url = https://github.com/kolzchut/jquery-scrolldepth.git

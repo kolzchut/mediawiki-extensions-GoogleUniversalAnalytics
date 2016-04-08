@@ -11,23 +11,28 @@ The following differences exist:
   - Enhanced Link Attribution
   - Remarketing plugin
   - Tracking user groups using a custom dimension
-
+  - Additional plugins: [riveted] and [scrolldepth] by [Rob Flaherty].
 
 ## Configuration ##
 
 ### Configuration options
   
-| Variable                                  | Value | Explanation                                                                                                                                                                    |
-|-------------------------------------------|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| $wgGoogleAnalyticsAccount                 | null  | Your analytics account number (e.g. "UA-12345678-1")                                                                                                                           |
-| $wgGoogleAnalyticsAnonymizeIP             | true  | Instruct Google anonymize the user's IP (by removing the last octet, or last 80 bits of IPv6 address) before any additional processing on Google's servers; see [anonymizeIp]. |
-| $wgGoogleAnalyticsCookiePath              | null  | Useful if you need to [restrict tracking to a single sub-directory]; set to something like '/tracked-dir'.                                                                       |
-| $wgGoogleAnalyticsEnahncedLinkAttribution | false | Enables [Enhanced Link Attribution]. You also need to [enable Enhanced Link Attribution in the reports interface].                                                             |
-| $wgGoogleAnalyticsSegmentByGroup          | false | Push the user's groups into a custom var, allowing later segmentation in the GA dashboard. See ```$wgGoogleAnalyticsSegmentByGroupDimension``` as well.                        |
-| $wgGoogleAnalyticsSegmentByGroupDimension | 1     | If $wgGoogleAnalyticsSegmentByGroup is enabled, this is used to determine the custom dimension number to be used.                                                              |
-| $wgGoogleAnalyticsTrackExtLinks           | true  | Track clicks on external links (including interwiki and interlanguage) using non-interaction events.                                                                           |
-| $wgGoogleAnalyticsRemarketing             | false | Enables remarketing and advertising reporting. You also need to [enable remarketing in property settings]. You can read more about [remarketing in Google Analytics].          |
-| $wgGoogleAnalyticsPageGrouping            | false | Kol-Zchut specific! Classify pages into Content Groups, based on the first 2 visible categories. You must set up content groups in advance.                                    |  
+| Variable                                           | Value | Explanation                                                                                                                                                                    
+|----------------------------------------------------|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| $wgGoogleUniversalAnalyticsAccount                 | null  | Your analytics account number (e.g. "UA-12345678-1")
+| $wgGoogleUniversalAnalyticsAnonymizeIP             | true  | Instruct Google anonymize the user's IP (by removing the last octet, or last 80 bits of IPv6 address) before any additional processing on Google's servers; see [anonymizeIp].
+| $wgGoogleUniversalAnalyticsCookiePath              | null  | Useful if you need to [restrict tracking to a single sub-directory]; set to something like '/tracked-dir'.
+| $wgGoogleUniversalAnalyticsEnahncedLinkAttribution | false | Enables [Enhanced Link Attribution]. You also need to [enable Enhanced Link Attribution in the reports interface].
+| $wgGoogleUniversalAnalyticsSegmentByGroup          | false | Push the user's groups into a custom var, allowing later segmentation in the GA dashboard. See ```$wgGoogleUniversalAnalyticsSegmentByGroupDimension``` as well.
+| $wgGoogleUniversalAnalyticsSegmentByGroupDimension | 1     | If $wgGoogleUniversalAnalyticsSegmentByGroup is enabled, this is used to determine the custom dimension number to be used.
+| $wgGoogleUniversalAnalyticsTrackExtLinks           | true  | Track clicks on external links (including interwiki and interlanguage) using non-interaction events.
+| $wgGoogleUniversalAnalyticsRemarketing             | false | Enables remarketing and advertising reporting. You also need to [enable remarketing in property settings]. You can read more about [remarketing in Google Analytics].
+| $wgGoogleUniversalAnalyticsRiveted                 | false | Enables the [riveted] plugin., which in turn is configured by `$wgGoogleUniversalAnalyticsRivetedConfig`.
+| $wgGoogleUniversalAnalyticsRivetedConfig           | false | An array with the following options: reportInterval (30), idleTimeout (30), nonInteraction (true), reportOnce (false), userTiming (false). All of these except the last two are described on the plugin's homepage; reportOnce makes the plugin shut off after sending a single first even, while userTiming turns off sending a User Timing event.
+| $wgGoogleUniversalAnalyticsScrollDepth             | false | Enables the [scrolldepth] plugin., which in turn is configured by `$wgGoogleUniversalAnalyticsScrollDepthConfig`.
+| $wgGoogleUniversalAnalyticsRivetedConfig           | false | An array with the following options: minHeight (0), elements ([]), percentage (true), userTiming (false), pixelDepth (false), nonInteraction (true), reportOnce (false). All of these except the last one are described on the plugin's homepage; reportOnce makes the plugin shut off after sending a single first event.
+| $wgGoogleUniversalAnalyticsPageGrouping            | false | Kol-Zchut specific! Classify pages into Content Groups, based on the first 2 visible categories. You must set up content groups in advance.
+
 
 [anonymizeIp]: https://support.google.com/analytics/answer/2763052
 [enable remarketing in property settings]: https://support.google.com/analytics/answer/2444872
@@ -46,20 +51,24 @@ Users with the "noanalytics" right are exempt from tracking; by default this is 
 
 ## Changelog ##
 
+### v3.4.0
+- Two additional plugins: [riveted] (for active time tracking) and [scrolldepth] (scroll tracking).
+
+
 ### v3.3.0
 - Finally switch to Universal Analytics (which upstream did long ago)
 - Move external link tracking to a ResourceLoader module
 
 
 ### v3.2.6
-Bugfix: $wgGoogleAnalyticsOtherCode was added even if user/page were excluded.
+Bugfix: $wgGoogleUniversalAnalyticsOtherCode was added even if user/page were excluded.
 
 ### v3.2.5
 - Improved documentation
 - Partial rebase (we still much diverge) against upstream (v3.0.1):
     * Allow to ignore namespaces and specific pages/special pages
-      ($wgGoogleAnalyticsIgnoreNsIDs, $wgGoogleAnalyticsIgnorePages, $wgGoogleAnalyticsIgnoreSpecials)
-    * add $wgGoogleAnalyticsOtherCode to add any other analytics code desired.
+      ($wgGoogleUniversalAnalyticsIgnoreNsIDs, $wgGoogleUniversalAnalyticsIgnorePages, $wgGoogleUniversalAnalyticsIgnoreSpecials)
+    * add $wgGoogleUniversalAnalyticsOtherCode to add any other analytics code desired.
 	* we still use the older ga.js
 
 ### v3.2.4
@@ -67,7 +76,7 @@ Track interwiki & interlanguage links
 
 ### v3.2.3
 use the "noanalytics" group permission to exempt users from tracking, instead of the
-previous ```$wgGoogleAnalyticsIgnoreGroups```.
+previous ```$wgGoogleUniversalAnalyticsIgnoreGroups```.
 
 ### v3.2.2
 Make sure ```_setAccount``` is always first, in case another extension pushes something before this loads
@@ -80,3 +89,15 @@ Optional external links tracking (on by default), Page Grouping by categories
 
 ### v3.1.0
 Optional ["Enhanced Link Attribution"](https://support.google.com/analytics/answer/2558867)
+
+
+
+
+
+
+
+---------------
+Additional references:
+[riveted]: http://riveted.parsnip.io/
+[scrolldepth]: http://scrolldepth.parsnip.io/
+[Rob Flaherty]: https://parsnip.io/

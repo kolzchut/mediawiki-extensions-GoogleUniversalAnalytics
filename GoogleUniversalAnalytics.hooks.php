@@ -13,7 +13,30 @@ class GoogleUniversalAnalyticsHooks {
 	}
 
 	static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
+		global $wgGoogleUniversalAnalyticsRiveted, $wgGoogleUniversalAnalyticsScrollDepth;
+
 		$out->addHeadItem( 'GoogleUniversalAnalyticsIntegration', self::addGoogleAnalytics( $out ) );
+
+		if ( $wgGoogleUniversalAnalyticsScrollDepth === true ) {
+			$out->addModules( 'ext.googleUniversalAnalytics.scrolldepth.init' );
+		}
+		if ( $wgGoogleUniversalAnalyticsRiveted === true ) {
+			$out->addModules( 'ext.googleUniversalAnalytics.riveted' );
+		}
+
+		return true;
+	}
+
+	public static function onResourceLoaderGetConfigVars( &$vars ) {
+		global $wgGoogleUniversalAnalyticsRiveted, $wgGoogleUniversalAnalyticsRivetedConfig,
+		       $wgGoogleUniversalAnalyticsScrollDepth, $wgGoogleUniversalAnalyticsScrollDepthConfig;
+
+		if ( $wgGoogleUniversalAnalyticsScrollDepth === true ) {
+			$vars['wgGoogleUniversalAnalyticsScrollDepthConfig'] = $wgGoogleUniversalAnalyticsScrollDepthConfig;
+		}
+		if ( $wgGoogleUniversalAnalyticsRiveted === true ) {
+			$vars['wgGoogleUniversalAnalyticsRivetedConfig'] = $wgGoogleUniversalAnalyticsRivetedConfig;
+		}
 
 		return true;
 	}

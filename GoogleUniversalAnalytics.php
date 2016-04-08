@@ -6,7 +6,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
 	'name' => 'Google Universal Analytics Integration for Kol-Zchut',
-	'version' => 'kz-3.3.0 (based on upstream 3.0.1)',
+	'version' => 'kz-3.4.0 (based on upstream 3.0.1)',
 	'author' => array(
 		'Tim Laqua',
 		'[https://www.mediawiki.org/wiki/User:DavisNT Davis Mosenkovs]',
@@ -52,6 +52,26 @@ $wgGoogleUniversalAnalyticsRemarketing = false;
 // Kol-Zchut specific! Classify page into Content Groups, based on the first 2 visible categories.
 $wgGoogleUniversalAnalyticsPageGrouping = false;
 
+$wgGoogleUniversalAnalyticsScrollDepth = false;
+$wgGoogleUniversalAnalyticsScrollDepthConfig = array(
+	'minHeight' => 0,
+	'elements' => array(),
+	'percentage' => true,
+	'percentageInterval' => null,
+	'userTiming' => false,
+	'pixelDepth' => false,
+	'nonInteraction' => true
+);
+
+$wgGoogleUniversalAnalyticsRiveted       = false;
+$wgGoogleUniversalAnalyticsRivetedConfig = array(
+	'reportInterval' => 60,
+	'idleTimeout' => 30,
+	'nonInteraction' => true,
+	'reportOnce' => false,
+	'userTiming' => false
+);
+
 
 /*****************************/
 
@@ -59,25 +79,55 @@ $wgAutoloadClasses['GoogleUniversalAnalyticsHooks'] = __DIR__ . '/GoogleUniversa
 $wgHooks['SkinAfterBottomScripts'][] = 'GoogleUniversalAnalyticsHooks::onSkinAfterBottomScripts';
 $wgHooks['BeforePageDisplay'][]  = 'GoogleUniversalAnalyticsHooks::onBeforePageDisplay';
 $wgHooks['OutputPageMakeCategoryLinks'][] = 'GoogleUniversalAnalyticsHooks::onOutputPageMakeCategoryLinks'; // Get categories
+$wgHooks['ResourceLoaderGetConfigVars'][] = 'GoogleUniversalAnalyticsHooks::onResourceLoaderGetConfigVars';
 $wgHooks['UnitTestsList'][] = 'GoogleUniversalAnalyticsHooks::onUnitTestsList';
 
 
-$wgResourceModules['ext.googleUniversalAnalytics.utils'] = array(
-		'scripts' => array(
-				'modules/ext.googleUniversalAnalytics.utils.js',
-		),
-		'localBasePath' => __DIR__,
-		'remoteExtPath' => 'GoogleUniversalAnalytics',
-		'position' => 'bottom'
+$resourceModulesBase = array(
+	'localBasePath' => __DIR__ . '/modules',
+	'remoteExtPath' => 'GoogleUniversalAnalytics/modules',
+	'position' => 'bottom'
 );
 
-$wgResourceModules['ext.googleUniversalAnalytics.externalLinks'] = array(
-		'scripts' => array(
-				'modules/ext.googleUniversalAnalytics.externalLinks.js',
-		),
-		'dependencies' => 'ext.googleUniversalAnalytics.utils',
-		'localBasePath' => __DIR__,
-		'remoteExtPath' => 'GoogleUniversalAnalytics',
-		'position' => 'bottom'
+$wgResourceModules['ext.googleUniversalAnalytics.utils'] = $resourceModulesBase + array(
+	'scripts' => array(
+			'ext.googleUniversalAnalytics.utils.js',
+	)
 );
+
+$wgResourceModules['ext.googleUniversalAnalytics.externalLinks'] = $resourceModulesBase + array(
+	'scripts' => array(
+			'ext.googleUniversalAnalytics.externalLinks.js',
+	),
+	'dependencies' => 'ext.googleUniversalAnalytics.utils',
+);
+
+$wgResourceModules['ext.googleUniversalAnalytics.riveted'] = $resourceModulesBase + array(
+	'scripts' => array(
+		'riveted/riveted.js',
+		'ext.googleUniversalAnalytics.riveted.binding.js'
+	)
+);
+
+/*
+$wgResourceModules['ext.googleUniversalAnalytics.riveted.init'] = $resourceModulesBase + array(
+	'scripts' => 'ext.googleUniversalAnalytics.riveted.binding.js',
+	'dependencies' => 'ext.googleUniversalAnalytics.riveted'
+);
+
+$wgResourceModules['ext.googleUniversalAnalytics.riveted'] = $resourceModulesBase + array(
+	'scripts' => 'riveted/riveted.js'
+);
+*/
+
+$wgResourceModules['ext.googleUniversalAnalytics.scrolldepth.init'] = $resourceModulesBase + array(
+	'scripts' => 'ext.googleUniversalAnalytics.scrolldepth.init.js',
+	'dependencies' => 'jquery.scrolldepth'
+);
+
+$wgResourceModules['jquery.scrolldepth'] = $resourceModulesBase + array(
+	'scripts' => 'jquery.scrolldepth/jquery.scrolldepth.js'
+);
+
+unset( $resourceModulesBase );
 
