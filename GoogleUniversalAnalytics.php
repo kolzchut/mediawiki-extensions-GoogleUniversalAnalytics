@@ -13,7 +13,8 @@ $wgExtensionCredits['other'][] = array(
 		'Dror S. [FFS] ([http://www.kolzchut.org.il Kol-Zchut])'
 	),
 	'descriptionmsg' => 'googleuniversalanalytics-desc',
-	'url' => 'https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration',
+	'license-name'    => 'GPL-2.0+',
+	'url' => 'https://github.com/kolzchut/mediawiki-extensions-GoogleUniversalAnalytics',
 );
 
 $wgMessagesDirs['GoogleUniversalAnalytics'] = __DIR__ . '/i18n';
