@@ -53,7 +53,7 @@
 			return false;
 		},
 
-		// gaEventProps = { eventCategory, eventAction, eventLabel, nonInteraction }
+		// gaEventProps = { eventCategory, eventAction, eventLabel, nonInteraction, eventValue }
 		recordEvent: function( gaEventProps ) {
 			if( !mwGA.utils.isGoogleAnalyticsLoaded() ) {
 				return;
