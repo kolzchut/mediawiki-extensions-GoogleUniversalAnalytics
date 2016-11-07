@@ -2,17 +2,19 @@
 
 class GoogleUniversalAnalyticsHooks {
 	private static $normalCats = array();
-	private static $ignoredPageGroupingNamespaces = array( NS_CATEGORY, NS_FILE, NS_SPECIAL, NS_MEDIAWIKI );
+	private static $ignoredPageGroupingNamespaces = array(
+		NS_CATEGORY, NS_FILE, NS_SPECIAL, NS_MEDIAWIKI
+	);
 
 	 // We don't want to log hidden categories,
 	 // this is the only place where that distinction is available
-	static function onOutputPageMakeCategoryLinks( OutputPage &$out, $categories, &$links ) {
+	public static function onOutputPageMakeCategoryLinks( OutputPage &$out, $categories, &$links ) {
 		self::$normalCats = array_keys( $categories, 'normal' );
 
 		return true;
 	}
 
-	static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
+	public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
 		global $wgGoogleUniversalAnalyticsRiveted, $wgGoogleUniversalAnalyticsScrollDepth;
 
 		$out->addHeadItem( 'GoogleUniversalAnalyticsIntegration', self::addGoogleAnalytics( $out ) );
@@ -41,7 +43,7 @@ class GoogleUniversalAnalyticsHooks {
 		return true;
 	}
 
-	function addGoogleAnalytics( OutputPage &$out ) {
+	public static function addGoogleAnalytics( OutputPage &$out ) {
 		global $wgGoogleUniversalAnalyticsAccount,
 			   $wgGoogleUniversalAnalyticsAnonymizeIP, $wgGoogleUniversalAnalyticsTrackExtLinks,
 		       $wgGoogleUniversalAnalyticsSegmentByGroup, $wgGoogleUniversalAnalyticsSegmentByGroupDimension,
@@ -160,17 +162,21 @@ SNIPPET;
 		       $wgGoogleUniversalAnalyticsIgnorePages,
 		       $wgGoogleUniversalAnalyticsIgnoreSpecials;
 
-
-		return count( array_filter( $wgGoogleUniversalAnalyticsIgnoreSpecials, function ( $v ) use ( $title ) {
+		$ignoreSpecials = count( array_filter( $wgGoogleUniversalAnalyticsIgnoreSpecials,
+				function ( $v ) use ( $title ) {
 					return $title->isSpecial( $v );
-				} ) ) > 0
-				|| in_array( $title->getNamespace(), $wgGoogleUniversalAnalyticsIgnoreNsIDs, true )
-				|| in_array( $title->getPrefixedText(), $wgGoogleUniversalAnalyticsIgnorePages, true );
+				} ) ) > 0;
+
+		return (
+			$ignoreSpecials
+			|| in_array( $title->getNamespace(), $wgGoogleUniversalAnalyticsIgnoreNsIDs, true )
+			|| in_array( $title->getPrefixedText(), $wgGoogleUniversalAnalyticsIgnorePages, true )
+		);
 	}
 
-	protected function messageToComment( $messageName = '' ) {
-		if( empty( $messageName ) ) {
-			throw( new Exception( 'missing a message name!') );
+	protected static function messageToComment( $messageName = '' ) {
+		if ( empty( $messageName ) ) {
+			throw( new Exception( 'missing a message name!' ) );
 		}
 
 		return PHP_EOL . '<!-- ' . wfMessage( $messageName )->text() . ' -->' . PHP_EOL;
