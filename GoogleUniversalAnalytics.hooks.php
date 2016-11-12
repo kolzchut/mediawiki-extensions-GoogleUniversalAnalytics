@@ -157,7 +157,7 @@ SNIPPET;
 		return true;
 	}
 
-	function isIgnoredPage( Title $title ) {
+	private static function isIgnoredPage( Title $title ) {
 		global $wgGoogleUniversalAnalyticsIgnoreNsIDs,
 		       $wgGoogleUniversalAnalyticsIgnorePages,
 		       $wgGoogleUniversalAnalyticsIgnoreSpecials;
