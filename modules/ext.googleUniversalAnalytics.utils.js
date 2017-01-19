@@ -53,6 +53,16 @@
 			return false;
 		},
 
+		// gaSocialProps = { socialNetwork, socialAction, socialTarget }
+		recordSocialInteraction: function( gaSocialProps ) {
+			if( !mwGA.utils.isGoogleAnalyticsLoaded() ) {
+				return;
+			}
+			gaSocialProps.hitCallback = gaSocialProps.hitCallback || null;
+			gaSocialProps.transport = 'beacon';
+			window.ga( 'send', 'social', gaSocialProps );
+		},
+
 		// gaEventProps = { eventCategory, eventAction, eventLabel, nonInteraction, eventValue }
 		recordEvent: function( gaEventProps ) {
 			if( !mwGA.utils.isGoogleAnalyticsLoaded() ) {
