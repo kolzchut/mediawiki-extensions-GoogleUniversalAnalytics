@@ -1,10 +1,10 @@
 <?php
 
 class GoogleUniversalAnalyticsHooks {
-	private static $normalCats = array();
-	private static $ignoredPageGroupingNamespaces = array(
+	private static $normalCats = [];
+	private static $ignoredPageGroupingNamespaces = [
 		NS_CATEGORY, NS_FILE, NS_SPECIAL, NS_MEDIAWIKI
-	);
+	];
 
 	 // We don't want to log hidden categories,
 	 // this is the only place where that distinction is available
@@ -45,11 +45,15 @@ class GoogleUniversalAnalyticsHooks {
 
 	public static function addGoogleAnalytics( OutputPage &$out ) {
 		global $wgGoogleUniversalAnalyticsAccount,
-			   $wgGoogleUniversalAnalyticsAnonymizeIP, $wgGoogleUniversalAnalyticsTrackExtLinks,
-		       $wgGoogleUniversalAnalyticsSegmentByGroup, $wgGoogleUniversalAnalyticsSegmentByGroupDimension,
-		       $wgGoogleUniversalAnalyticsCookiePath, $wgGoogleUniversalAnalyticsDomainName,
+				$wgGoogleUniversalAnalyticsAnonymizeIP,
+				$wgGoogleUniversalAnalyticsTrackExtLinks,
+				$wgGoogleUniversalAnalyticsSegmentByGroup,
+				$wgGoogleUniversalAnalyticsSegmentByGroupDimension,
+				$wgGoogleUniversalAnalyticsCookiePath,
+				$wgGoogleUniversalAnalyticsDomainName,
 				$wgGoogleUniversalAnalyticsPageGrouping,
-		       $wgGoogleUniversalAnalyticsEnahncedLinkAttribution, $wgGoogleUniversalAnalyticsRemarketing;
+				$wgGoogleUniversalAnalyticsEnahncedLinkAttribution,
+				$wgGoogleUniversalAnalyticsRemarketing;
 
 
 		if ( is_null( $wgGoogleUniversalAnalyticsAccount ) ) {
