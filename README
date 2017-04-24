@@ -44,12 +44,24 @@ The following differences exist:
 ### Exemption from tracking
 Users with the "noanalytics" right are exempt from tracking; by default this is applied only to bots.
 
+### Integration with other extensions
+From version 3.5 and forward there is an hook to allow other extensions
+to inject code before sending the page view: `GoogleAnalytics::SendPageView`.
+An example of its use can be found in skin HelenaKiosk.
+
+This extension also includes a ResourceLoader module for sending events,
+named `ext.googleUniversalAnalytics.utils`.
+
 
 ## Roadmap
 - Update the extension to MediaWiki 1.25 loading standard (extension.json)
-- Create a new hook so can split out Kol-Zchut-specific parts
+- Split out Kol-Zchut-specific parts by using the new sendPageView hook.
 
 ## Changelog ##
+
+### v3.5
+- New MediaWiki hook "GoogleAnalytics::beforeSendPageView" to allow other
+  extensions to add data before the hit (i.e., custom dimensions)
 
 ### v3.4.0
 - Two additional plugins: [riveted] (for active time tracking) and [scrolldepth] (scroll tracking).

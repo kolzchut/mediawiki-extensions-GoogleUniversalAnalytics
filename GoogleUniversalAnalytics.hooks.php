@@ -120,6 +120,8 @@ class GoogleUniversalAnalyticsHooks {
 			$script .= "ga('set', 'anonymizeIp', true);" . PHP_EOL;
 		};
 
+		Hooks::run( 'GoogleAnalytics::SendPageView', [ &$out, &$script ] );
+
 		// And finally... send the pageview
 		$script .= "ga('send', 'pageview');" . PHP_EOL;
 
