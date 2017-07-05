@@ -6,7 +6,7 @@
 class GoogleAnalyticsHooksTest extends MediaWikiLangTestCase {
 	public function setUp() {
 		parent::setUp();
-		$this->setMwGlobals( 'wgGoogleAnalyticsAccount', '' );
+		$this->setMwGlobals( 'wgGoogleUniversalAnalyticsAccount', '' );
 	}
 	/**
 	 * @param $allowed
@@ -42,7 +42,7 @@ class GoogleAnalyticsHooksTest extends MediaWikiLangTestCase {
 	 */
 	public function testUserPermissions( $allowed, $expected ) {
 		$text = '';
-		GoogleAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( $allowed ), $text );
+		GoogleUniversalAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( $allowed ), $text );
 		$this->assertContains( $expected, $text );
 	}
 
@@ -54,27 +54,27 @@ class GoogleAnalyticsHooksTest extends MediaWikiLangTestCase {
 	}
 
 	public function testAccountIdSet() {
-		$this->setMwGlobals( 'wgGoogleAnalyticsAccount', 'foobarbaz' );
+		$this->setMwGlobals( 'wgGoogleUniversalAnalyticsAccount', 'foobarbaz' );
 		$text = '';
-		GoogleAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false ), $text );
+		GoogleUniversalAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false ), $text );
 		$this->assertContains( 'www.google-analytics.com/analytics.js', $text );
 		$this->assertContains( 'foobarbaz', $text );
-		$this->setMwGlobals( 'wgGoogleAnalyticsAccount', '' );
-		GoogleAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false ), $text );
+		$this->setMwGlobals( 'wgGoogleUniversalAnalyticsAccount', '' );
+		GoogleUniversalAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false ), $text );
 		$this->assertContains( 'No web analytics configured', $text );
 		$this->setMwGlobals( 'wgGoogleAnalyticsOtherCode', 'analytics.example.com/foo.js' );
-		GoogleAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false ), $text );
+		GoogleUniversalAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false ), $text );
 		$this->assertContains( 'analytics.example.com/foo.js', $text );
 	}
 
 	public function testAnonymizeIp() {
-		$this->setMwGlobals( 'wgGoogleAnalyticsAccount', 'foobarbaz' );
+		$this->setMwGlobals( 'wgGoogleUniversalAnalyticsAccount', 'foobarbaz' );
 		$text = '';
-		GoogleAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false ), $text );
+		GoogleUniversalAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false ), $text );
 		$this->assertContains( 'anonymizeIp', $text );
-		$this->setMwGlobals( 'wgGoogleAnalyticsAnonymizeIP', false );
+		$this->setMwGlobals( 'wgGoogleUniversalAnalyticsAnonymizeIP', false );
 		$text = '';
-		GoogleAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false ), $text );
+		GoogleUniversalAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false ), $text );
 		$this->assertNotContains( 'anonymizeIp', $text );
 	}
 
@@ -84,7 +84,7 @@ class GoogleAnalyticsHooksTest extends MediaWikiLangTestCase {
 	public function testExcludedPages( $type, $conf, $title, $include ) {
 		$this->setMwGlobals( $type, array( $conf ) );
 		$text = '';
-		GoogleAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false, $title ), $text );
+		GoogleUniversalAnalyticsHooks::onSkinAfterBottomScripts( $this->mockSkin( false, $title ), $text );
 		if ( $include ) {
 			$this->assertContains( 'No web analytics configured', $text );
 		} else {

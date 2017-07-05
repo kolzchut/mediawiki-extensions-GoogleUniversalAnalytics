@@ -10,5 +10,5 @@
     "right-noanalytics": "Exempted from web analytics tracking",
     "googleuniversalanalytics-disabled-for-user": "Google Analytics tracking is disabled for this user",
     "googleuniversalanalytics-disabled-for-page": "Google Analytics tracking is disabled on this page",
-    "googleuniversalanalytics-error-not-configured": "Error: you must set $wgGoogleAnalyticsAccount to your Google Analytics account number (e.g. \"UA-12345678-1\")."
+    "googleuniversalanalytics-error-not-configured": "Error: you must set $wgGoogleUniversalAnalyticsAccount to your Google Analytics account number (e.g. \"UA-12345678-1\")."
 }
