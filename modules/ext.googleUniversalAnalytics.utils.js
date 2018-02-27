@@ -21,7 +21,7 @@
 			return (
 				mwGA.utils.isGoogleAnalyticsLoaded()
 				&& typeof( navigator.sendBeacon ) === 'undefined'
-				&& !mw.promoter.isLinkWillOpenInNewTab( domEvent )
+				&& !mwGA.utils.isLinkWillOpenInNewTab( domEvent )
 			);
 		},
 
