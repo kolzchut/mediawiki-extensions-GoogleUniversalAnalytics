@@ -92,7 +92,7 @@ class GoogleUniversalAnalyticsHooks {
 			$script .="ga('set', '{$dimension}', '{$userGroups}');" . PHP_EOL;
 		}
 
-		if ( isset( $wgGoogleUniversalAnalyticsPageGrouping ) && $wgGoogleUniversalAnalyticsPageGrouping === true ) {
+		if ( !empty( $wgGoogleUniversalAnalyticsPageGrouping ) ) {
 			$title = $out->getTitle();
 			$ns = $title->getNamespace();
 			if ( isset( $ns ) && in_array( $ns, self::$ignoredPageGroupingNamespaces ) ) {
@@ -108,11 +108,11 @@ class GoogleUniversalAnalyticsHooks {
 			};
 		};
 
-		if ( isset( $wgGoogleUniversalAnalyticsRemarketing ) && $wgGoogleUniversalAnalyticsRemarketing === true ) {
+		if ( $wgGoogleUniversalAnalyticsRemarketing === true ) {
 			$script .= "ga('require', 'displayfeatures');" . PHP_EOL;
 		}
 
-		if ( isset( $wgGoogleUniversalAnalyticsEnahncedLinkAttribution) && $wgGoogleUniversalAnalyticsEnahncedLinkAttribution == true ) {
+		if ( $wgGoogleUniversalAnalyticsEnahncedLinkAttribution === true ) {
 			$script .= "ga('require', 'linkid', 'linkid.js');" . PHP_EOL;
 		}
 
@@ -130,7 +130,7 @@ class GoogleUniversalAnalyticsHooks {
 		$script .= '<!-- End Google Analytics -->' . PHP_EOL;
 
 		// Add module for tracking external links using events
-		if ( isset( $wgGoogleUniversalAnalyticsTrackExtLinks ) && $wgGoogleUniversalAnalyticsTrackExtLinks === true ) {
+		if ( $wgGoogleUniversalAnalyticsTrackExtLinks === true ) {
 			$out->addModules( 'ext.googleUniversalAnalytics.externalLinks' );
 		}
 
@@ -196,7 +196,7 @@ SNIPPET;
 		/**
 		 * @var SplFileInfo $fileInfo
 		 */
-		$ourFiles = array();
+		$ourFiles = [];
 		foreach ( new RecursiveIteratorIterator( $directoryIterator ) as $fileInfo ) {
 			if ( substr( $fileInfo->getFilename(), -8 ) === 'Test.php' ) {
 				$ourFiles[] = $fileInfo->getPathname();
