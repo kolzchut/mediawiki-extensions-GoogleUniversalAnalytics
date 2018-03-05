@@ -54,10 +54,12 @@ named `ext.googleUniversalAnalytics.utils`.
 
 
 ## Roadmap
-- Update the extension to MediaWiki 1.25 loading standard (extension.json)
 - Split out Kol-Zchut-specific parts by using the new sendPageView hook.
 
 ## Changelog ##
+
+### v3.6.0
+- Update the extension to MediaWiki 1.25 Extension Registration (extension.json)
 
 ### v3.5
 - New MediaWiki hook "GoogleAnalytics::beforeSendPageView" to allow other

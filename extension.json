@@ -1,0 +1,143 @@
+{
+	"name": "Google Universal Analytics Integration for Kol-Zchut",
+	"version": "kz-3.6.0 (based on upstream 3.0.1)",
+	"author": [
+		"Tim Laqua",
+		"[https://www.mediawiki.org/wiki/User:DavisNT Davis Mosenkovs]",
+		"Dror S. [FFS] ([http://www.kolzchut.org.il Kol-Zchut])"
+	],
+	"url": "https://github.com/kolzchut/mediawiki-extensions-GoogleUniversalAnalytics",
+	"descriptionmsg": "googleuniversalanalytics-desc",
+	"license-name": "GPL-2.0+",
+	"type": "other",
+	"GroupPermissions": {
+		"bot": {
+			"noanalytics": true
+		}
+	},
+	"MessagesDirs": {
+		"GoogleUniversalAnalytics": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"GoogleUniversalAnalyticsHooks": "GoogleUniversalAnalytics.hooks.php"
+	},
+	"ResourceModules": {
+		"ext.googleUniversalAnalytics.utils": {
+			"position": "bottom",
+			"scripts": [
+				"ext.googleUniversalAnalytics.utils.js"
+			]
+		},
+		"ext.googleUniversalAnalytics.externalLinks": {
+			"position": "bottom",
+			"scripts": [
+				"ext.googleUniversalAnalytics.externalLinks.js"
+			],
+			"dependencies": "ext.googleUniversalAnalytics.utils"
+		},
+		"ext.googleUniversalAnalytics.riveted": {
+			"position": "bottom",
+			"scripts": [
+				"riveted/riveted.js",
+				"ext.googleUniversalAnalytics.riveted.binding.js"
+			]
+		},
+		"ext.googleUniversalAnalytics.scrolldepth.init": {
+			"position": "bottom",
+			"scripts": "ext.googleUniversalAnalytics.scrolldepth.init.js",
+			"dependencies": "jquery.scrolldepth"
+		},
+		"jquery.scrolldepth": {
+			"position": "bottom",
+			"scripts": "jquery.scrolldepth/jquery.scrolldepth.js"
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "modules",
+		"remoteExtPath": "GoogleUniversalAnalytics/modules"
+	},
+	"Hooks": {
+		"SkinAfterBottomScripts": "GoogleUniversalAnalyticsHooks::onSkinAfterBottomScripts",
+		"BeforePageDisplay": "GoogleUniversalAnalyticsHooks::onBeforePageDisplay",
+		"OutputPageMakeCategoryLinks": "GoogleUniversalAnalyticsHooks::onOutputPageMakeCategoryLinks",
+		"ResourceLoaderGetConfigVars": "GoogleUniversalAnalyticsHooks::onResourceLoaderGetConfigVars"
+	},
+	"config": {
+		"GoogleUniversalAnalyticsAccount": {
+			"value": null
+		},
+		"GoogleUniversalAnalyticsAnonymizeIP": {
+			"value": true
+		},
+		"GoogleUniversalAnalyticsOtherCode": {
+			"value": null
+		},
+		"GoogleUniversalAnalyticsIgnoreNsIDs": {
+			"value": []
+		},
+		"GoogleUniversalAnalyticsIgnorePages": {
+			"value": []
+		},
+		"GoogleUniversalAnalyticsIgnoreSpecials": {
+			"value": [
+				"Userlogin",
+				"Userlogout",
+				"Preferences",
+				"ChangePassword"
+			]
+		},
+		"GoogleUniversalAnalyticsCookiePath": {
+			"value": null
+		},
+		"GoogleUniversalAnalyticsDomainName": {
+			"value": null
+		},
+		"GoogleUniversalAnalyticsSegmentByGroup": {
+			"value": false
+		},
+		"GoogleUniversalAnalyticsSegmentByGroupDimension": {
+			"value": 1
+		},
+		"GoogleUniversalAnalyticsTrackExtLinks": {
+			"value": true
+		},
+		"GoogleUniversalAnalyticsEnahncedLinkAttribution": {
+			"value": false
+		},
+		"GoogleUniversalAnalyticsRemarketing": {
+			"value": false
+		},
+		"GoogleUniversalAnalyticsPageGrouping": {
+			"value": false
+		},
+		"GoogleUniversalAnalyticsScrollDepth": {
+			"value": false
+		},
+		"GoogleUniversalAnalyticsScrollDepthConfig": {
+			"value": {
+				"minHeight": 0,
+				"elements": [],
+				"percentage": true,
+				"percentageInterval": null,
+				"userTiming": false,
+				"pixelDepth": false,
+				"nonInteraction": true
+			}
+		},
+		"GoogleUniversalAnalyticsRiveted": {
+			"value": false
+		},
+		"GoogleUniversalAnalyticsRivetedConfig": {
+			"value": {
+				"reportInterval": 60,
+				"idleTimeout": 30,
+				"nonInteraction": true,
+				"reportOnce": false,
+				"userTiming": false
+			}
+		}
+	},
+	"manifest_version": 2
+}
