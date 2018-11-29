@@ -1,51 +1,51 @@
 /** Helper functions for click tracking */
-( function( $, mw ) {
+( function ( $, mw ) {
 	'use strict';
+	var mwGA;
 
 	mw.googleAnalytics = mw.googleAnalytics || {};	// Might not be defined yet
-
-	var mwGA = mw.googleAnalytics;
+	mwGA = mw.googleAnalytics;
 
 	mw.googleAnalytics.utils = {
-		isLinkWillOpenInNewTab: function( event ) {
+		isLinkWillOpenInNewTab: function ( event ) {
 			return (
-					event.ctrlKey
-					|| event.shiftKey
-					|| event.metaKey // apple
-					|| (event.button && event.button === 1)
-					|| $( event.target).attr( 'target' ) === '_blank'
+				event.ctrlKey ||
+					event.shiftKey ||
+					event.metaKey || // apple
+					( event.button && event.button === 1 ) ||
+					$( event.target ).attr( 'target' ) === '_blank'
 			);
 		},
 
-		isShouldOverrideClickHandler: function(domEvent ) {
+		isShouldOverrideClickHandler: function ( domEvent ) {
 			return (
-				mwGA.utils.isGoogleAnalyticsLoaded()
-				&& typeof( navigator.sendBeacon ) === 'undefined'
-				&& !mwGA.utils.isLinkWillOpenInNewTab( domEvent )
+				mwGA.utils.isGoogleAnalyticsLoaded() &&
+				typeof ( navigator.sendBeacon ) === 'undefined' &&
+				!mwGA.utils.isLinkWillOpenInNewTab( domEvent )
 			);
 		},
 
-		defaultClickHandler: function( domEvent ) {
-			if( mwGA.utils.isShouldOverrideClickHandler( domEvent ) ) {
+		defaultClickHandler: function ( domEvent ) {
+			if ( mwGA.utils.isShouldOverrideClickHandler( domEvent ) ) {
 				domEvent.preventDefault();
 				// Worse case scenario: the hitCallback never called back...
 				// https://developers.google.com/analytics/devguides/collection/analyticsjs/sending-hits#handling_timeouts
 				setTimeout(
-					function() {
+					function () {
 						mwGA.utils.goToEventTargetUrl( domEvent );
 					}, 1000
 				);
 			}
 		},
 
-		goToEventTargetUrl: function( domEvent ) {
-			if( mwGA.utils.isShouldOverrideClickHandler( domEvent ) ) {
+		goToEventTargetUrl: function ( domEvent ) {
+			if ( mwGA.utils.isShouldOverrideClickHandler( domEvent ) ) {
 				document.location = domEvent.target.href;
 			}
 		},
 
-		isGoogleAnalyticsLoaded: function() {
-			if( window.ga && window.ga.create ) {
+		isGoogleAnalyticsLoaded: function () {
+			if ( window.ga && window.ga.create ) {
 				return true;
 			}
 
@@ -54,8 +54,8 @@
 		},
 
 		// gaSocialProps = { socialNetwork, socialAction, socialTarget }
-		recordSocialInteraction: function( gaSocialProps ) {
-			if( !mwGA.utils.isGoogleAnalyticsLoaded() ) {
+		recordSocialInteraction: function ( gaSocialProps ) {
+			if ( !mwGA.utils.isGoogleAnalyticsLoaded() ) {
 				return;
 			}
 			gaSocialProps.hitCallback = gaSocialProps.hitCallback || null;
@@ -64,24 +64,23 @@
 		},
 
 		// gaEventProps = { eventCategory, eventAction, eventLabel, nonInteraction, eventValue }
-		recordEvent: function( gaEventProps ) {
-			if( !mwGA.utils.isGoogleAnalyticsLoaded() ) {
+		recordEvent: function ( gaEventProps ) {
+			if ( !mwGA.utils.isGoogleAnalyticsLoaded() ) {
 				return;
 			}
 
-			if( gaEventProps.nonInteraction !== false ) {
+			if ( gaEventProps.nonInteraction !== false ) {
 				gaEventProps.nonInteraction = true;
 			}
 			gaEventProps.hitCallback = gaEventProps.hitCallback || null;
 			gaEventProps.transport = 'beacon';
 
-
 			window.ga( 'send', 'event', gaEventProps );
 		},
 
-		recordClickEvent: function( domEvent, gaEventProps ) {
-			gaEventProps.hitCallback = function() { mwGA.utils.goToEventTargetUrl( domEvent ); };
-			if( gaEventProps.nonInteraction !== true ) {
+		recordClickEvent: function ( domEvent, gaEventProps ) {
+			gaEventProps.hitCallback = function () { mwGA.utils.goToEventTargetUrl( domEvent ); };
+			if ( gaEventProps.nonInteraction !== true ) {
 				gaEventProps.nonInteraction = false;
 			}
 
@@ -91,4 +90,4 @@
 		}
 	};
 
-})( jQuery, mediaWiki );
+}( jQuery, mediaWiki ) );

@@ -8,5 +8,9 @@
 		]
 	},
 	"googleuniversalanalytics-desc": "{{desc|name=google Analytics|url=https://www.mediawiki.org/wiki/Extension:Google_Analytics_Integration}}",
-	"right-noanalytics": "{{doc-right|noanalytics}}"
+	"right-noanalytics": "{{doc-right|noanalytics}}",
+	"googleuniversalanalytics-disabled-for-user": "Comment output to page when tracking is disabled for a the current user",
+	"googleuniversalanalytics-disabled-for-page": "comment output to page when tracking is disabled on the current page",
+	"googleuniversalanalytics-error-not-configured": "Error message output when $wgGoogleUniversalAnalyticsAccount is not set"
+
 }

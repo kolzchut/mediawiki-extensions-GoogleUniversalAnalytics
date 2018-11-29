@@ -6,14 +6,26 @@ class GoogleUniversalAnalyticsHooks {
 		NS_CATEGORY, NS_FILE, NS_SPECIAL, NS_MEDIAWIKI
 	];
 
-	 // We don't want to log hidden categories,
-	 // this is the only place where that distinction is available
+	/**
+	 * OutputPageMakeCategoryLinks hook handler
+	 *
+	 * We don't want to log hidden categories...
+	 * this is the only place where that distinction is available, so we get it here
+	 *
+	 * @param OutputPage &$out
+	 * @param array $categories
+	 * @param array &$links
+	 */
 	public static function onOutputPageMakeCategoryLinks( OutputPage &$out, $categories, &$links ) {
 		self::$normalCats = array_keys( $categories, 'normal' );
-
-		return true;
 	}
 
+	/**
+	 * BeforePageDisplay hook handler
+	 *
+	 * @param OutputPage &$out
+	 * @param Skin &$skin
+	 */
 	public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
 		global $wgGoogleUniversalAnalyticsRiveted, $wgGoogleUniversalAnalyticsScrollDepth;
 
@@ -25,24 +37,33 @@ class GoogleUniversalAnalyticsHooks {
 		if ( $wgGoogleUniversalAnalyticsRiveted === true ) {
 			$out->addModules( 'ext.googleUniversalAnalytics.riveted' );
 		}
-
-		return true;
 	}
 
+	/**
+	 * ResourceLoaderGetConfigVars hook handler
+	 *
+	 * @param array &$vars
+	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgGoogleUniversalAnalyticsRiveted, $wgGoogleUniversalAnalyticsRivetedConfig,
-		       $wgGoogleUniversalAnalyticsScrollDepth, $wgGoogleUniversalAnalyticsScrollDepthConfig;
+			   $wgGoogleUniversalAnalyticsScrollDepth, $wgGoogleUniversalAnalyticsScrollDepthConfig;
 
 		if ( $wgGoogleUniversalAnalyticsScrollDepth === true ) {
-			$vars['wgGoogleUniversalAnalyticsScrollDepthConfig'] = $wgGoogleUniversalAnalyticsScrollDepthConfig;
+			$vars['wgGoogleUniversalAnalyticsScrollDepthConfig'] =
+				$wgGoogleUniversalAnalyticsScrollDepthConfig;
 		}
 		if ( $wgGoogleUniversalAnalyticsRiveted === true ) {
 			$vars['wgGoogleUniversalAnalyticsRivetedConfig'] = $wgGoogleUniversalAnalyticsRivetedConfig;
 		}
-
-		return true;
 	}
 
+	/**
+	 * @param OutputPage &$out
+	 *
+	 * @return string
+	 * @throws FatalError
+	 * @throws MWException
+	 */
 	public static function addGoogleAnalytics( OutputPage &$out ) {
 		global $wgGoogleUniversalAnalyticsAccount,
 				$wgGoogleUniversalAnalyticsAnonymizeIP,
@@ -54,7 +75,6 @@ class GoogleUniversalAnalyticsHooks {
 				$wgGoogleUniversalAnalyticsPageGrouping,
 				$wgGoogleUniversalAnalyticsEnahncedLinkAttribution,
 				$wgGoogleUniversalAnalyticsRemarketing;
-
 
 		if ( is_null( $wgGoogleUniversalAnalyticsAccount ) ) {
 			$msg = self::messageToComment( 'googleuniversalanalytics-error-not-configured' );
@@ -81,22 +101,23 @@ class GoogleUniversalAnalyticsHooks {
 
 		$cookieDomain = $wgGoogleUniversalAnalyticsDomainName ?: 'auto';
 
+		$script .= "ga('create', '{$wgGoogleUniversalAnalyticsAccount}', '{$cookieDomain}'" .
+					$extraCreateParams . ");" . PHP_EOL;
 
-		$script .= "ga('create', '{$wgGoogleUniversalAnalyticsAccount}', '{$cookieDomain}'" . $extraCreateParams . ");" . PHP_EOL;
-
-
-		if( $wgGoogleUniversalAnalyticsSegmentByGroup === true && is_int( $wgGoogleUniversalAnalyticsSegmentByGroupDimension ) ) {
+		if ( $wgGoogleUniversalAnalyticsSegmentByGroup === true &&
+			is_int( $wgGoogleUniversalAnalyticsSegmentByGroupDimension )
+		) {
 			// The following should be fine with caching, and simply always get "*" for anon users
 			$userGroups = implode( ',', $out->getUser()->getEffectiveGroups() );
 			$dimension = 'dimension' . $wgGoogleUniversalAnalyticsSegmentByGroupDimension;
-			$script .="ga('set', '{$dimension}', '{$userGroups}');" . PHP_EOL;
+			$script .= "ga('set', '{$dimension}', '{$userGroups}');" . PHP_EOL;
 		}
 
 		if ( !empty( $wgGoogleUniversalAnalyticsPageGrouping ) ) {
 			$title = $out->getTitle();
 			$ns = $title->getNamespace();
 			if ( isset( $ns ) && in_array( $ns, self::$ignoredPageGroupingNamespaces ) ) {
-				$script .= PHP_EOL."/* Namespace excluded from page grouping */".PHP_EOL;
+				$script .= PHP_EOL . "/* Namespace excluded from page grouping */" . PHP_EOL;
 			} else {
 				$normalCats = self::$normalCats;
 				if ( count( $normalCats ) > 1 ) {
@@ -148,25 +169,29 @@ SNIPPET;
 		return $snippet . PHP_EOL;
 	}
 
+	/**
+	 * SkinAfterBottomScripts hook handler
+	 *
+	 * @param Skin $skin
+	 * @param string &$text
+	 */
 	public static function onSkinAfterBottomScripts( Skin $skin, &$text = '' ) {
 		global $wgGoogleUniversalAnalyticsOtherCode;
 
 		if ( $wgGoogleUniversalAnalyticsOtherCode === null
 			 || $skin->getUser()->isAllowed( 'noanalytics' )
-		     || self::isIgnoredPage( $skin->getTitle() )
+			 || self::isIgnoredPage( $skin->getTitle() )
 		) {
-			return true;
+			return;
 		}
 
 		$text .= $wgGoogleUniversalAnalyticsOtherCode . PHP_EOL;
-
-		return true;
 	}
 
 	private static function isIgnoredPage( Title $title ) {
 		global $wgGoogleUniversalAnalyticsIgnoreNsIDs,
-		       $wgGoogleUniversalAnalyticsIgnorePages,
-		       $wgGoogleUniversalAnalyticsIgnoreSpecials;
+			   $wgGoogleUniversalAnalyticsIgnorePages,
+			   $wgGoogleUniversalAnalyticsIgnoreSpecials;
 
 		$ignoreSpecials = count( array_filter( $wgGoogleUniversalAnalyticsIgnoreSpecials,
 				function ( $v ) use ( $title ) {
@@ -180,12 +205,17 @@ SNIPPET;
 		);
 	}
 
+	/**
+	 * @param string $messageName
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
 	protected static function messageToComment( $messageName = '' ) {
 		if ( empty( $messageName ) ) {
 			throw( new Exception( 'missing a message name!' ) );
 		}
 
 		return PHP_EOL . '<!-- ' . wfMessage( $messageName )->text() . ' -->' . PHP_EOL;
-
 	}
 }
