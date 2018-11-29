@@ -21,7 +21,7 @@
 		]
 	},
 	"AutoloadClasses": {
-		"GoogleUniversalAnalyticsHooks": "GoogleUniversalAnalytics.hooks.php"
+		"GoogleUniversalAnalyticsHooks": "GoogleUniversalAnalyticsHooks.php"
 	},
 	"ResourceModules": {
 		"ext.googleUniversalAnalytics.utils": {
