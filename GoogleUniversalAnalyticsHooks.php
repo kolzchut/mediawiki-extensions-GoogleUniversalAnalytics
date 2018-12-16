@@ -55,6 +55,10 @@ class GoogleUniversalAnalyticsHooks {
 		if ( $wgGoogleUniversalAnalyticsRiveted === true ) {
 			$vars['wgGoogleUniversalAnalyticsRivetedConfig'] = $wgGoogleUniversalAnalyticsRivetedConfig;
 		}
+
+		if ( is_array( self::$normalCats ) ) {
+			$vars['wgVisibleCategories'] = self::$normalCats;
+		}
 	}
 
 	/**
