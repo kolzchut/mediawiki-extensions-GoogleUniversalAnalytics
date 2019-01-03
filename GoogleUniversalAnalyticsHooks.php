@@ -27,9 +27,16 @@ class GoogleUniversalAnalyticsHooks {
 	 * @param Skin &$skin
 	 */
 	public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
-		global $wgGoogleUniversalAnalyticsRiveted, $wgGoogleUniversalAnalyticsScrollDepth;
+		global $wgGoogleUniversalAnalyticsTrackExtLinks,
+		       $wgGoogleUniversalAnalyticsRiveted,
+		       $wgGoogleUniversalAnalyticsScrollDepth;
 
 		$out->addHeadItem( 'GoogleUniversalAnalyticsIntegration', self::addGoogleAnalytics( $out ) );
+
+		// Add module for tracking external links using events
+		if ( $wgGoogleUniversalAnalyticsTrackExtLinks === true ) {
+			$out->addModules( 'ext.googleUniversalAnalytics.externalLinks' );
+		}
 
 		if ( $wgGoogleUniversalAnalyticsScrollDepth === true ) {
 			$out->addModules( 'ext.googleUniversalAnalytics.scrolldepth.init' );
@@ -71,7 +78,6 @@ class GoogleUniversalAnalyticsHooks {
 	public static function addGoogleAnalytics( OutputPage &$out ) {
 		global $wgGoogleUniversalAnalyticsAccount,
 				$wgGoogleUniversalAnalyticsAnonymizeIP,
-				$wgGoogleUniversalAnalyticsTrackExtLinks,
 				$wgGoogleUniversalAnalyticsSegmentByGroup,
 				$wgGoogleUniversalAnalyticsSegmentByGroupDimension,
 				$wgGoogleUniversalAnalyticsCookiePath,
@@ -145,19 +151,14 @@ class GoogleUniversalAnalyticsHooks {
 			$script .= "ga('set', 'anonymizeIp', true);" . PHP_EOL;
 		};
 
-		Hooks::run( 'GoogleAnalytics::SendPageView', [ &$out, &$script ] );
-
-		// And finally... send the pageview
-		$script .= "ga('send', 'pageview');" . PHP_EOL;
+		// Send the page view only if no other extension stopped it
+		if ( Hooks::run( 'GoogleAnalytics::SendPageView', [ &$out, &$script ] ) ) {
+			$script .= "ga('send', 'pageview');" . PHP_EOL;
+		}
 
 		// And end the script
 		$script .= "</script>" . PHP_EOL;
 		$script .= '<!-- End Google Analytics -->' . PHP_EOL;
-
-		// Add module for tracking external links using events
-		if ( $wgGoogleUniversalAnalyticsTrackExtLinks === true ) {
-			$out->addModules( 'ext.googleUniversalAnalytics.externalLinks' );
-		}
 
 		return $script;
 	}

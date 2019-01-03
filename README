@@ -47,7 +47,7 @@ Users with the "noanalytics" right are exempt from tracking; by default this is 
 ### Integration with other extensions
 From version 3.5 and forward there is an hook to allow other extensions
 to inject code before sending the page view: `GoogleAnalytics::SendPageView`.
-An example of its use can be found in skin HelenaKiosk.
+Extensions may also return `false` through this hook to prevent the page view from being sent.
 
 This extension also includes a ResourceLoader module for sending events,
 named `ext.googleUniversalAnalytics.utils`.
@@ -57,6 +57,10 @@ named `ext.googleUniversalAnalytics.utils`.
 - Split out Kol-Zchut-specific parts by using the new sendPageView hook.
 
 ## Changelog ##
+
+### v3.6.1
+- Other extensions can return false from "GoogleAnalytics::beforeSendPageView" to stop the page
+  view from being sent automatically.
 
 ### v3.6.0
 - Update the extension to MediaWiki 1.25 Extension Registration (extension.json)
