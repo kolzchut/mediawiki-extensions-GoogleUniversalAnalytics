@@ -1,25 +1,6 @@
 <?php
 
 class GoogleUniversalAnalyticsHooks {
-	private static $normalCats = [];
-	private static $ignoredPageGroupingNamespaces = [
-		NS_CATEGORY, NS_FILE, NS_SPECIAL, NS_MEDIAWIKI
-	];
-
-	/**
-	 * OutputPageMakeCategoryLinks hook handler
-	 *
-	 * We don't want to log hidden categories...
-	 * this is the only place where that distinction is available, so we get it here
-	 *
-	 * @param OutputPage &$out
-	 * @param array $categories
-	 * @param array &$links
-	 */
-	public static function onOutputPageMakeCategoryLinks( OutputPage &$out, $categories, &$links ) {
-		self::$normalCats = array_keys( $categories, 'normal' );
-	}
-
 	/**
 	 * BeforePageDisplay hook handler
 	 *
@@ -62,10 +43,6 @@ class GoogleUniversalAnalyticsHooks {
 		if ( $wgGoogleUniversalAnalyticsRiveted === true ) {
 			$vars['wgGoogleUniversalAnalyticsRivetedConfig'] = $wgGoogleUniversalAnalyticsRivetedConfig;
 		}
-
-		if ( is_array( self::$normalCats ) ) {
-			$vars['wgVisibleCategories'] = self::$normalCats;
-		}
 	}
 
 	/**
@@ -82,7 +59,6 @@ class GoogleUniversalAnalyticsHooks {
 				$wgGoogleUniversalAnalyticsSegmentByGroupDimension,
 				$wgGoogleUniversalAnalyticsCookiePath,
 				$wgGoogleUniversalAnalyticsDomainName,
-				$wgGoogleUniversalAnalyticsPageGrouping,
 				$wgGoogleUniversalAnalyticsEnahncedLinkAttribution,
 				$wgGoogleUniversalAnalyticsRemarketing;
 
@@ -122,22 +98,6 @@ class GoogleUniversalAnalyticsHooks {
 			$dimension = 'dimension' . $wgGoogleUniversalAnalyticsSegmentByGroupDimension;
 			$script .= "ga('set', '{$dimension}', '{$userGroups}');" . PHP_EOL;
 		}
-
-		if ( !empty( $wgGoogleUniversalAnalyticsPageGrouping ) ) {
-			$title = $out->getTitle();
-			$ns = $title->getNamespace();
-			if ( isset( $ns ) && in_array( $ns, self::$ignoredPageGroupingNamespaces ) ) {
-				$script .= PHP_EOL . "/* Namespace excluded from page grouping */" . PHP_EOL;
-			} else {
-				$normalCats = self::$normalCats;
-				if ( count( $normalCats ) > 1 ) {
-					$normalCats[0] = Title::makeTitleSafe( NS_CATEGORY, $normalCats[0] )->getText();
-					$normalCats[1] = Title::makeTitleSafe( NS_CATEGORY, $normalCats[1] )->getText();
-					$script .= "ga('set', 'contentGroup2', '{$normalCats[1]}');" . PHP_EOL
-							. "ga('set', 'contentGroup3', '{$normalCats[0]}');" . PHP_EOL;
-				};
-			};
-		};
 
 		if ( $wgGoogleUniversalAnalyticsRemarketing === true ) {
 			$script .= "ga('require', 'displayfeatures');" . PHP_EOL;

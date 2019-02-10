@@ -6,7 +6,8 @@
 			"Dror S [FFS]"
         ]
     },
-    "googleuniversalanalytics-desc": "Inserts Google Universal Analytics (and/or other web analytics) scripts into MediaWiki pages for tracking",
+    "googleuniversalanalytics-extensionname": "Google Universal Analytics Integration",
+    "googleuniversalanalytics-desc": "Inserts Google Universal Analytics (and/or other web analytics) scripts into MediaWiki pages for tracking\n(Based on GoogleAnalytics 3.0.1)",
     "right-noanalytics": "Exempted from web analytics tracking",
     "googleuniversalanalytics-disabled-for-user": "Google Analytics tracking is disabled for this user",
     "googleuniversalanalytics-disabled-for-page": "Google Analytics tracking is disabled on this page",

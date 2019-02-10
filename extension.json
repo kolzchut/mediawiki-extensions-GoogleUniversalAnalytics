@@ -1,6 +1,7 @@
 {
-	"name": "Google Universal Analytics Integration for Kol-Zchut",
-	"version": "kz-3.6.1 (based on upstream 3.0.1)",
+	"name": "GoogleUniversalAnalytics",
+	"namemsg": "googleuniversalanalytics-extensionname",
+	"version": "3.7.0",
 	"author": [
 		"Tim Laqua",
 		"[https://www.mediawiki.org/wiki/User:DavisNT Davis Mosenkovs]",
@@ -61,7 +62,6 @@
 	"Hooks": {
 		"SkinAfterBottomScripts": "GoogleUniversalAnalyticsHooks::onSkinAfterBottomScripts",
 		"BeforePageDisplay": "GoogleUniversalAnalyticsHooks::onBeforePageDisplay",
-		"OutputPageMakeCategoryLinks": "GoogleUniversalAnalyticsHooks::onOutputPageMakeCategoryLinks",
 		"ResourceLoaderGetConfigVars": "GoogleUniversalAnalyticsHooks::onResourceLoaderGetConfigVars"
 	},
 	"config": {
@@ -107,9 +107,6 @@
 			"value": false
 		},
 		"GoogleUniversalAnalyticsRemarketing": {
-			"value": false
-		},
-		"GoogleUniversalAnalyticsPageGrouping": {
 			"value": false
 		},
 		"GoogleUniversalAnalyticsScrollDepth": {
